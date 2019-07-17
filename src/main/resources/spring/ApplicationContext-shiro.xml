@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop.xsd
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx.xsd
+	">
+		<!-- <mvc:annotation-driven /> -->
+		<!-- 扫描的包 -->
+		<!-- <context:component-scan base-package="com.bets" /> -->
+		
+		<!-- 項目自定义的Realm -->		 
+	    <bean id="ShiroRealm" class="com.bets.interceptor.shiro.ShiroRealm" ></bean>
+		
+		<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+			<property name="realm" ref="ShiroRealm" />
+		</bean>
+		
+		
+		<!-- Shiro Filter -->
+		<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+			<!-- Shiro的核心安全接口，这个属性是必须的 -->
+			<property name="securityManager" ref="securityManager" />
+			 <!-- 要求登录时的链接(登录页面地址)，非必须的属性，默认会自动寻找Web工程根目录下的"/login.jsp"页面 -->
+			<property name="loginUrl" value="/" />
+			<!-- 登录成功后要跳转的连接 --> 
+			<property name="successUrl" value="/main/index" />
+			<!-- 用户访问未对其授权的资源时，所显示的连接 -->
+			<property name="unauthorizedUrl" value="/login_toLogin" />
+			
+			<property name="filterChainDefinitions">
+				<value>
+				/static/login/** 			= anon
+				/plugins/keypad/** 			= anon
+				/static/js/myjs/** 			= authc
+				/static/js/** 				= anon
+				/amazeUI/** 				= anon
+				/uploadFiles/uploadImgs/** 	= anon
+				/htmlResources/** 	        = anon
+				/uploadFiles/app/**          = anon
+	           	/code.do 					= anon
+	           	/login_login	 			= anon
+	           	/app**/** 					= anon
+	           	/m/** 					    = anon
+	           	/weixin/** 					= anon
+	           	/system/login.html 			= anon
+	           	/person/list.do				= anon
+	           	/agentApp/getMessage.do		= anon
+	           	/**							= authc
+				</value>
+			</property>
+		</bean>
+   
+</beans>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="RoomMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		m_room_consume
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		USER_ID,	
+		OPT_TYPE,	
+		CARD_NUM,	
+		ROOM_ID,	
+		PLAY_COUNT,	
+		OPT_TIME,	
+		MAJROOM_ID
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{USER_ID},	
+		#{OPT_TYPE},	
+		#{CARD_NUM},	
+		#{ROOM_ID},	
+		#{PLAY_COUNT},	
+		#{OPT_TIME},	
+		#{MAJROOM_ID}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			MAJROOM_ID = #{MAJROOM_ID}
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			USER_ID = #{USER_ID},
+			OPT_TYPE = #{OPT_TYPE},
+			CARD_NUM = #{CARD_NUM},
+			PLAY_COUNT = #{PLAY_COUNT},
+			OPT_TIME  = #{OPT_TIME},
+		MAJROOM_ID = MAJROOM_ID
+		where 
+		MAJROOM_ID = #{MAJROOM_ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			MAJROOM_ID = #{MAJROOM_ID}
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 1=1
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					OPT_TYPE  LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					or
+					USER_ID  LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					or
+					ROOM_ID  LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					or
+					PLAY_COUNT  LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+				)
+		</if>
+			<if test="pd.lastStart!=null and pd.lastStart!='' ">
+			and OPT_TIME &gt;= #{pd.lastStart} 
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd!=''">
+			and OPT_TIME &lt;= #{pd.lastEnd} 
+		</if>
+		<if test="pd.today !=null and pd.today !=''">
+			and 
+			OPT_TIME LIKE CONCAT( #{pd.today},'%') 
+		</if>
+		order by OPT_TIME desc
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			MAJROOM_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+	<!-- 查询玩家消费记录(新列表)  -->
+	<select id="findUserConsumeList" parameterType="pd" resultType="pd">
+		SELECT <include refid="Field"></include> FROM m_room_consume WHERE 1=1 
+		<if test="number !=null and number != 888888">
+			and
+			USER_ID in
+			(SELECT USER_ID FROM m_app_user WHERE YQ_CODE=#{number}) 
+		</if>
+		<!-- 模糊查询 -->
+		<if test="keywords !=null and keywords!=''">
+			and
+				(
+					<!-- 模糊查询1 -->
+					LOCATE(#{keywords},USER_ID)
+					or
+					<!-- 模糊查询2 -->
+					POSITION(#{keywords} in NICK_NAME)
+					or
+					<!-- 模糊查询3 -->
+					instr(ROOM_ID,#{keywords})
+				)
+		</if>
+		<if test="lastStart!=null and lastStart !=''">
+			and OPT_TIME &gt;= #{lastStart}
+		</if>
+		<if test="lastEnd!=null and lastEnd !=''">
+			and OPT_TIME &lt;= #{lastEnd}
+		</if>
+		order by OPT_TIME desc,OPT_TYPE DESC,ROOM_ID asc 
+		limit #{start},#{sum}
+	</select>
+	
+	<!-- 查询玩家消费总记录数 -->
+	<select id="findUserConsumeTotal" parameterType="pd" resultType="pd">
+		SELECT count(*) total from m_room_consume WHERE 1=1 
+		<if test="number !=null and number != 888888">
+			and
+			 USER_ID in
+			(SELECT USER_ID FROM m_app_user WHERE YQ_CODE=#{number})
+		</if>
+		<!-- 模糊查询 -->
+		<if test="keywords !=null and keywords!=''">
+			and
+				(
+					<!-- 模糊查询1 -->
+					LOCATE(#{keywords},USER_ID)
+					or
+					<!-- 模糊查询2 -->
+					POSITION(#{keywords} in NICK_NAME)
+					or
+					<!-- 模糊查询3 -->
+					instr(ROOM_ID,#{keywords})
+				)
+		</if>
+		<if test="lastStart!=null and lastStart !=''">
+			and OPT_TIME &gt;= #{lastStart}
+		</if>
+		<if test="lastEnd!=null and lastEnd !=''">
+			and OPT_TIME &lt;= #{lastEnd}
+		</if>
+	</select>
+	
+</mapper>

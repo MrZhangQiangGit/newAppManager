@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="moneyStatisticsMapper">
+	<!-- 模糊查询今天的金额总计-->
+	<select id="findByToday" parameterType="pd" resultType="pd">
+		select SUM(MONEY) A from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{CREATOR_TIME1},'%') and CREATOR = #{CREATOR}
+	</select>
+	<select id="findByToday2" parameterType="pd" resultType="pd">
+		select SUM(MONEY) A2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{CREATOR_TIME1},'%') and CREATOR = #{CREATOR}
+	</select>
+	
+	<!-- 模糊查询昨天的金额总计-->
+	<select id="findByYesterday" parameterType="pd" resultType="pd">
+		select SUM(MONEY) B from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{CREATOR_TIME2},'%') and CREATOR = #{CREATOR}
+	</select>
+	<select id="findByYesterday2" parameterType="pd" resultType="pd">
+		select SUM(MONEY) B2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{CREATOR_TIME2},'%') and CREATOR = #{CREATOR}
+	</select>
+	
+	<!-- 模糊查询金额总计-->
+	<select id="findBySum" parameterType="pd" resultType="pd">
+		select SUM(MONEY) C from m_play_recharge where CREATOR = #{CREATOR}
+	</select>
+	<select id="findBySum2" parameterType="pd" resultType="pd">
+		select SUM(MONEY) C2 from m_agent_recharge where CREATOR = #{CREATOR}
+	</select>
+	
+	<!-- 1月-->
+	<select id="findByJanuary" parameterType="pd" resultType="pd">
+		select SUM(MONEY) January from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{one},'%') and CREATOR = #{CREATOR}
+	</select>
+	<select id="findByJanuary2" parameterType="pd" resultType="pd">
+		select SUM(MONEY) January2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{one},'%') and CREATOR = #{CREATOR}
+	</select>
+	
+	<!-- 2月-->
+	<select id="findByFebruary" parameterType="pd" resultType="pd">
+		select SUM(MONEY) February from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{two},'%') and CREATOR = #{CREATOR}
+	</select>
+	<select id="findByFebruary2" parameterType="pd" resultType="pd">
+		select SUM(MONEY) February2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{two},'%') and CREATOR = #{CREATOR}
+	</select>
+	
+	<!-- 3月-->
+	<select id="findByMarch" parameterType="pd" resultType="pd">
+		select SUM(MONEY) March from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{three},'%') and CREATOR = #{CREATOR}
+	</select>
+	<select id="findByMarch2" parameterType="pd" resultType="pd">
+		select SUM(MONEY) March2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{three},'%') and CREATOR = #{CREATOR}
+	</select>
+	
+	<!-- 4月-->
+	<select id="findByApril" parameterType="pd" resultType="pd">
+		select SUM(MONEY) April from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{four},'%') and CREATOR = #{CREATOR}
+	</select>
+	<select id="findByApril2" parameterType="pd" resultType="pd">
+		select SUM(MONEY) April2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{four},'%') and CREATOR = #{CREATOR}
+	</select>
+	
+	<!-- 5月-->
+	<select id="findByMay" parameterType="pd" resultType="pd">
+		select SUM(MONEY) May from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{five},'%') and CREATOR = #{CREATOR}
+	</select>
+	<select id="findByMay2" parameterType="pd" resultType="pd">
+		select SUM(MONEY) May2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{five},'%') and CREATOR = #{CREATOR}
+	</select>
+	
+	<!-- 6月-->
+	<select id="findByJune" parameterType="pd" resultType="pd">
+		select SUM(MONEY) June from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{six},'%') and CREATOR = #{CREATOR}
+	</select>
+	<select id="findByJune2" parameterType="pd" resultType="pd">
+		select SUM(MONEY) June2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{six},'%') and CREATOR = #{CREATOR}
+	</select>
+	
+	<!-- 7月-->
+	<select id="findByJuly" parameterType="pd" resultType="pd">
+		select SUM(MONEY) July from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{seven},'%') and CREATOR = #{CREATOR}
+	</select>
+	<select id="findByJuly2" parameterType="pd" resultType="pd">
+		select SUM(MONEY) July2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{seven},'%') and CREATOR = #{CREATOR}
+	</select>
+	
+	<!-- 8月-->
+	<select id="findByAugust" parameterType="pd" resultType="pd">
+		select SUM(MONEY) August from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{eight},'%') and CREATOR = #{CREATOR}
+	</select>
+	<select id="findByAugust2" parameterType="pd" resultType="pd">
+		select SUM(MONEY) August2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{eight},'%') and CREATOR = #{CREATOR}
+	</select>
+	
+	<!-- 9月-->
+	<select id="findBySeptember" parameterType="pd" resultType="pd">
+		select SUM(MONEY) September from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{nine},'%') and CREATOR = #{CREATOR}
+	</select>
+	<select id="findBySeptember2" parameterType="pd" resultType="pd">
+		select SUM(MONEY) September2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{nine},'%') and CREATOR = #{CREATOR}
+	</select>
+	
+	<!-- 10月-->
+	<select id="findByOctober" parameterType="pd" resultType="pd">
+		select SUM(MONEY) October from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{ten},'%') and CREATOR = #{CREATOR}
+	</select>
+	<select id="findByOctober2" parameterType="pd" resultType="pd">
+		select SUM(MONEY) October2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{ten},'%') and CREATOR = #{CREATOR}
+	</select>
+	
+	<!-- 11月-->
+	<select id="findByNovember" parameterType="pd" resultType="pd">
+		select SUM(MONEY) November from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{eleven},'%') and CREATOR = #{CREATOR}
+	</select>
+	<select id="findByNovember2" parameterType="pd" resultType="pd">
+		select SUM(MONEY) November2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{eleven},'%') and CREATOR = #{CREATOR}
+	</select>
+	
+	<!-- 12月-->
+	<select id="findByDecember" parameterType="pd" resultType="pd">
+		select SUM(MONEY) December from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{twevle},'%') and CREATOR = #{CREATOR}
+	</select>
+	<select id="findByDecember2" parameterType="pd" resultType="pd">
+		select SUM(MONEY) December2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{twevle},'%') and CREATOR = #{CREATOR}
+	</select>
+	
+	
+	<!-- 充值总额统计 -->
+	<select id="gettotalcharge" parameterType="pd" resultType="pd">
+	    SELECT sum(MONEY) MONEY FROM (
+			SELECT SUM(MONEY) MONEY FROM m_agent_recharge where CREATOR='admin' and CHARGE_TYPE=1
+			<if test="time !=null and time !=''">
+			   and CREATOR_TIME LIKE CONCAT( #{time},'%')
+			</if>
+			UNION ALL
+			SELECT SUM(TRAN_MONEY) MONEY FROM m_tran_detail where STATUS=3
+			<if test="time !=null and time !=''">
+			   and CREATE_TIME LIKE CONCAT( #{time},'%')
+			</if>
+			) a
+	    
+	</select>
+	<!-- 线上充值统计 -->
+	<select id="getonlinerechargelistPage" parameterType="page" resultType="pd">
+	    SELECT SUM(TRAN_MONEY) money,sum(TRAN_NUM) TRAN_NUM,DATE_FORMAT(CREATE_TIME,'%Y-%m-%d') As TRADE_TIME FROM m_tran_detail where STATUS=3
+	     <if test="pd.lastStart !=null and pd.lastStart !=''">
+			   and
+			   CREATE_TIME &gt; #{pd.lastStart}
+			</if>
+			<if test="pd.lastEnd !=null and pd.lastEnd !=''">
+			   and
+			   CREATE_TIME &lt; #{pd.lastEnd}
+			</if>
+			<if test="pd.today !=null and pd.today !=''">
+				and 
+				CREATE_TIME LIKE CONCAT( #{pd.today},'%') 
+			</if>
+		GROUP BY trade_time desc 
+	</select>
+	<select id="getonlinerechargetotal" parameterType="page" resultType="pd">
+	    SELECT SUM(TRAN_MONEY) money,SUM(TRAN_NUM) num FROM m_tran_detail where STATUS=3
+	    <if test="pd.lastStart !=null and pd.lastStart !=''">
+			   and
+			   CREATE_TIME &gt; #{pd.lastStart}
+			</if>
+			<if test="pd.lastEnd !=null and pd.lastEnd !=''">
+			   and
+			   CREATE_TIME &lt; #{pd.lastEnd}
+			</if>
+			<if test="pd.today !=null and pd.today !=''">
+				and 
+				CREATE_TIME LIKE CONCAT( #{pd.today},'%') 
+			</if>
+	</select>
+	<!-- 月售卡金额总量 -->
+	<select id="monthtotalmoneylistPage" resultType="pd" parameterType="pd">
+	     SELECT sum(MONEY) MONEY,DATE_FORMAT(CREATOR_TIME,'%Y-%m') As TRADE_TIME
+			 from m_agent_recharge WHERE CREATOR='admin' and CHARGE_TYPE=1  GROUP BY TRADE_TIME
+	</select>
+	<!-- 微信月售卡统计 -->
+	<select id="wxmonthtotalmoneye" parameterType="pd" resultType="pd">
+	    SELECT sum(TRAN_MONEY) MONEY,DATE_FORMAT(CREATE_TIME,'%Y-%m') As TRADE_TIME
+			 from m_tran_detail where STATUS=3 group by TRADE_TIME DESC
+	</select>
+</mapper>

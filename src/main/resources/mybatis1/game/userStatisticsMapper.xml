@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="userStatisticsMapper">
+		<!-- 模糊查询今天登陆数量-->
+	<select id="findByToday" parameterType="pd" resultType="pd">
+		select count(*) A from m_login_log where LOGINTIME LIKE CONCAT( #{CREATOR_TIME1},'%')
+	</select>
+	
+	<!-- 模糊查询昨天登陆数量-->
+	<select id="findByYesterday" parameterType="pd" resultType="pd">
+		select count(*) B from m_login_log where LOGINTIME LIKE CONCAT( #{CREATOR_TIME2},'%')
+	</select>
+	
+	<!-- 模糊查询昨天和今天总计-->
+	<select id="findBySum" parameterType="pd" resultType="pd">
+		select count(*) C from m_login_log 
+	</select>
+	
+	<!-- 1月-->
+	<select id="findByJanuary" parameterType="pd" resultType="pd">
+		select count(*) January from m_login_log where LOGINTIME LIKE CONCAT( #{one},'%')
+	</select>
+	
+	<!-- 2月-->
+	<select id="findByFebruary" parameterType="pd" resultType="pd">
+		select count(*) February from m_login_log where LOGINTIME LIKE CONCAT( #{two},'%')
+	</select>
+	
+	<!-- 3月-->
+	<select id="findByMarch" parameterType="pd" resultType="pd">
+		select count(*) March from m_login_log where LOGINTIME LIKE CONCAT( #{three},'%')
+	</select>
+	
+	<!-- 4月-->
+	<select id="findByApril" parameterType="pd" resultType="pd">
+		select count(*) April from m_login_log where LOGINTIME LIKE CONCAT( #{four},'%')
+	</select>
+	
+	<!-- 5月-->
+	<select id="findByMay" parameterType="pd" resultType="pd">
+		select count(*) May from m_login_log where LOGINTIME LIKE CONCAT( #{five},'%')
+	</select>
+	
+	<!-- 6月-->
+	<select id="findByJune" parameterType="pd" resultType="pd">
+		select count(*) June from m_login_log where LOGINTIME LIKE CONCAT( #{six},'%')
+	</select>
+	
+	<!-- 7月-->
+	<select id="findByJuly" parameterType="pd" resultType="pd">
+		select count(*) July from m_login_log where LOGINTIME LIKE CONCAT( #{seven},'%')
+	</select>
+	
+	<!-- 8月-->
+	<select id="findByAugust" parameterType="pd" resultType="pd">
+		select count(*) August from m_login_log where LOGINTIME LIKE CONCAT( #{eight},'%')
+	</select>
+	
+	<!-- 9月-->
+	<select id="findBySeptember" parameterType="pd" resultType="pd">
+		select count(*) September from m_login_log where LOGINTIME LIKE CONCAT( #{nine},'%')
+	</select>
+	
+	<!-- 10月-->
+	<select id="findByOctober" parameterType="pd" resultType="pd">
+		select count(*) October from m_login_log where LOGINTIME LIKE CONCAT( #{ten},'%')
+	</select>
+	
+	<!-- 11月-->
+	<select id="findByNovember" parameterType="pd" resultType="pd">
+		select count(*) November from m_login_log where LOGINTIME LIKE CONCAT( #{eleven},'%')
+	</select>
+	
+	<!-- 12月-->
+	<select id="findByDecember" parameterType="pd" resultType="pd">
+		select count(*) December from m_login_log where LOGINTIME LIKE CONCAT( #{twevle},'%')
+	</select>
+	
+</mapper>

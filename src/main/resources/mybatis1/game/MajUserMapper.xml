@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MajUserMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		m_app_user
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		OPENID,	
+		NICK_NAME,	
+		USER_ID,	
+		STATUS,	
+		SEX,	
+		PROVINCE,	
+		CITY,	
+		PHONE,	
+		ROOM_CARD,	
+		CREAT_TIME,	
+		OPT_TIME,	
+		MAJUSER_ID,
+		YQ_CODE
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{OPENID},	
+		#{NICK_NAME},	
+		#{USER_ID},	
+		#{STATUS},	
+		#{SEX},	
+		#{PROVINCE},	
+		#{CITY},	
+		#{PHONE},	
+		#{ROOM_CARD},	
+		#{CREAT_TIME},	
+		#{OPT_TIME},	
+		#{MAJUSER_ID},
+		#{YQ_CODE}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			MAJUSER_ID = #{MAJUSER_ID}
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			NICK_NAME = #{NICK_NAME},
+			STATUS = #{STATUS},
+			SEX = #{SEX},
+			PROVINCE = #{PROVINCE},
+			CITY = #{CITY},
+			PHONE = #{PHONE},
+			CREAT_TIME= #{CREAT_TIME},
+			OPT_TIME = #{OPT_TIME},
+		MAJUSER_ID = MAJUSER_ID
+		where 
+		MAJUSER_ID = #{MAJUSER_ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			MAJUSER_ID = #{MAJUSER_ID}
+	</select>
+	<!-- 根据userid获取数据 -->
+	<select id="findByUserId" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from
+		<include refid="tableName"></include>
+		where
+			USER_ID = #{USER_ID}
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 1=1
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					NICK_NAME  LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					USER_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					or
+					YQ_CODE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+				)
+		</if>
+		<if test="pd.lastStart!=null and pd.lastStart!='' ">
+			and OPT_TIME &gt;= #{pd.lastStart} 
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd!=''">
+			and OPT_TIME &lt;= #{pd.lastEnd} 
+		</if>
+		<if test="pd.today !=null and pd.today !=''">
+			and 
+			OPT_TIME LIKE CONCAT( #{pd.today},'%') 
+		</if>
+		<if test="pd.AGENT_CODE != 888888 ">
+		    <if test="pd.type=='agent'">
+		       and  YQ_CODE =(SELECT YQ_CODE FROM m_agent WHERE AGENT_CODE=#{pd.AGENT_CODE})
+		    </if>
+		    <if test="pd.type !='agent'">
+			    and (YQ_CODE =(SELECT YQ_CODE FROM m_agent WHERE AGENT_CODE=#{pd.AGENT_CODE} )
+				or YQ_CODE in (SELECT YQ_CODE FROM m_agent WHERE P_ID=#{pd.AGENT_CODE} )
+				 or YQ_CODE in (
+				SELECT YQ_CODE from m_agent WHERE P_ID in (SELECT AGENT_CODE FROM m_agent WHERE P_ID=#{pd.AGENT_CODE}  )))
+			</if>
+		</if>
+		order by OPT_TIME desc
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+	</select>
+	<select id="findProvinceList" resultType="pd">
+		select PROVINCE from <include refid="tableName"></include>
+	</select>
+	
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			MAJUSER_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	<!-- 列表 -->
+	<select id="getuserbyqycode" parameterType="page" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where
+		YQ_CODE=#{YQ_CODE}
+		order by OPT_TIME desc limit #{pages},10
+	</select>
+	
+	<!-- 分页查询玩家列表 -->
+	<select id="findUserList" parameterType="pd" resultType="pd">
+		select * from m_app_user
+		where
+		1=1
+		<if test="number != null and number != 888888">
+			and YQ_CODE = #{number}
+		</if>
+		<if test="keywords !=null and keywords!=''">
+			and
+				(
+					LOCATE(#{keywords},USER_ID)
+					or
+					POSITION(#{keywords} in NICK_NAME)
+					or
+					instr(YQ_CODE,#{keywords})
+				)
+		</if>
+		<if test="lastStart!=null and lastStart !=''">
+			and CREATOR_TIME &gt;= #{lastStart}
+		</if>
+		<if test="lastEnd!=null and lastEnd !=''">
+			and CREATOR_TIME &lt;= #{lastEnd}
+		</if>
+		order by OPT_TIME desc,ROOM_CARD desc
+		limit #{start},#{sum}
+	</select>
+	<!-- 查询分页查询总页数 -->
+	<select id="findTotalUser" parameterType="pd" resultType="pd">
+		select count(*) total from m_app_user where 1=1
+		<if test="number != null and number != 888888">
+			and YQ_CODE = #{number}
+		</if>
+		<if test="keywords !=null and keywords!=''">
+			and
+				(
+					LOCATE(#{keywords},USER_ID)
+					or
+					POSITION(#{keywords} in NICK_NAME)
+					or
+					instr(YQ_CODE,#{keywords})
+				)
+		</if>
+		<if test="lastStart!=null and lastStart !=''">
+			and CREATOR_TIME &gt;= #{lastStart}
+		</if>
+		<if test="lastEnd!=null and lastEnd !=''">
+			and CREATOR_TIME &lt;= #{lastEnd}
+		</if>
+	</select>
+	
+	
+</mapper>

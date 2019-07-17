@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="RankstatisticsMapper">
+    
+    <select id="getscore" resultType="pd" parameterType="pd">
+		SELECT r.USER_ID ,r.NICK_NAME,SUM(r.SCORE) SCORE,u.LOGO_URL,r.END_TIME FROM m_fight_result r,m_app_user u
+		where   r.USER_ID=u.USER_ID
+		<if test="type ==1">
+		   and r.END_TIME LIKE CONCAT( #{today},'%')
+		</if>
+		<if test="type ==2">
+		   and r.END_TIME LIKE CONCAT( #{yesterday},'%')
+		</if>
+		<if test="type ==3">
+		  and <!-- YEARWEEK(date_format(r.END_TIME,'%Y-%m-%d')) = YEARWEEK(now()) -->
+		   <!-- r.END_TIME &gt; #{weekstart} and r.END_TIME &lt; #{weekend} -->
+		   r.END_TIME &gt;'2017-07-3 00:00:01' and r.END_TIME&lt;'2017-07-07 15:00:00'
+		</if>
+		<if test="type ==4">
+		   <!-- and YEARWEEK(date_format(r.END_TIME,'%Y-%m-%d')) = YEARWEEK(now()) - 1 -->
+		  and END_TIME &gt;'2017-06-28 00:00:01' and END_TIME&lt;'2017-07-02 23:59:59'
+		   <!-- and  r.END_TIME &gt;#{lastweeks} and  r.END_TIME &lt;#{lastweeke} -->
+		</if>
+		GROUP BY r.USER_ID;    
+    </select>
+    <select id="getresultinfo" resultType="pd" parameterType="pd">
+        SELECT COUNT(USER_ID) num,END_TIME FROM m_fight_result 
+        WHERE user_id = #{USER_ID} 
+        <if test="type ==1">
+		   and END_TIME LIKE CONCAT( #{today},'%')
+		</if>
+		<if test="type ==2">
+		   and END_TIME LIKE CONCAT( #{yesterday},'%')
+		</if>
+		<if test="type ==3">
+		   and <!-- YEARWEEK(date_format(END_TIME,'%Y-%m-%d')) = YEARWEEK(now()) -->
+		 <!-- END_TIME &gt; #{weekstart} and END_TIME &lt; #{weekend} -->
+		 END_TIME &gt;'2017-07-3 00:00:01' and END_TIME&lt;'2017-07-07 15:00:00'
+		</if>
+		<if test="type ==4">
+		  <!--  and YEARWEEK(date_format(END_TIME,'%Y-%m-%d')) = YEARWEEK(now()) - 1 -->
+		 and END_TIME &gt;'2017-06-28 00:00:01' and END_TIME&lt;'2017-07-02 23:59:59'
+		  <!--  and  END_TIME &gt;#{lastweeks} and  END_TIME &lt;#{lastweeke} -->
+		</if>
+		<if test="result==1">
+		   and SCORE &gt; 0
+		</if>
+		<if test="result==2">
+		   and SCORE &lt; 0
+		</if>
+		<if test="result==3">
+		   and SCORE = 0
+		</if>
+    </select>
+    <select id="insertrankdata" parameterType="pd" resultType="pd">
+        insert into m_score_rank  (ID,USER_ID,PHOTO_URL,USER_NICK,SHOW_MESSAGE,COUNT_SCORE,RANK_TYPE,CREATOR_TIME)
+        values (#{ID},#{USER_ID},#{PHOTO_URL},#{USER_NICK},#{SHOW_MESSAGE},#{COUNT_SCORE},#{RANK_TYPE},#{CREATOR_TIME})
+    </select>
+    <delete id="deletetabledata">
+        truncate m_score_rank;
+    </delete>
+</mapper>

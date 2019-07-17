@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="FightResultMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		m_fight_result
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		ROOM_ID,	
+		USER_ID,	
+		NICK_NAME,	
+		SCORE,	
+		STATUS,	
+		START_TIME,	
+		END_TIME,	
+		FIGHTRESULT_ID
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{ROOM_ID},	
+		#{USER_ID},	
+		#{NICK_NAME},	
+		#{SCORE},	
+		#{STATUS},	
+		#{START_TIME},	
+		#{END_TIME},	
+		#{FIGHTRESULT_ID}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			FIGHTRESULT_ID = #{FIGHTRESULT_ID}
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			ROOM_ID = #{ROOM_ID},
+			STATUS = #{STATUS},
+			USER_ID = #{USER_ID},	
+			NICK_NAME = #{NICK_NAME},
+			SCORE =	#{SCORE},
+			START_TIME = #{START_TIME},
+			END_TIME = #{END_TIME},
+			FIGHTRESULT_ID = FIGHTRESULT_ID
+			where 
+			FIGHTRESULT_ID = #{FIGHTRESULT_ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			FIGHTRESULT_ID = #{FIGHTRESULT_ID}
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 1=1 and STATUS !=1
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					ROOM_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					NICK_NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 	
+					or 
+					USER_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 				
+				)
+		</if>
+		<if test="pd.START_TIME!=null and pd.START_TIME!=''"><!-- 登录时间检索 -->
+					and START_TIME &gt;= #{pd.START_TIME} 
+		</if>
+		<if test="pd.END_TIME!=null and pd.END_TIME!=''"><!-- 登录时间检索 -->
+					and END_TIME &lt;= #{pd.END_TIME} 
+		</if>
+		<!-- <if test="pd.STATUS!= null and pd.STATUS != ''">关键词检索
+			and
+				(STATUS	= #{pd.STATUS}	)
+		</if> -->
+		<if test="pd.today !=null and pd.today !=''">
+			and 
+			END_TIME LIKE CONCAT( #{pd.today},'%') 
+		</if>
+		ORDER by STATUS,ROOM_ID,START_TIME desc
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			FIGHTRESULT_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+	<!-- 查询玩家战绩记录(新列表)  -->
+	<select id="findUserFightList" parameterType="pd" resultType="pd">
+		SELECT <include refid="Field"></include> FROM m_fight_result WHERE 1=1 
+		<if test="number !=null and number != 888888">
+			and
+			USER_ID in
+			(SELECT USER_ID FROM m_app_user WHERE YQ_CODE=#{number}) 
+		</if>
+		<!-- 模糊查询 -->
+		<if test="keywords !=null and keywords!=''">
+			and
+				(
+					<!-- 模糊查询1 -->
+					LOCATE(#{keywords},USER_ID)
+					or
+					<!-- 模糊查询2 -->
+					POSITION(#{keywords} in NICK_NAME)
+					or
+					<!-- 模糊查询3 -->
+					instr(ROOM_ID,#{keywords})
+				)
+		</if>
+		<if test="lastStart!=null and lastStart !=''">
+			and END_TIME &gt;= #{lastStart}
+		</if>
+		<if test="lastEnd!=null and lastEnd !=''">
+			and END_TIME &lt;= #{lastEnd}
+		</if>
+		order by END_TIME DESC,ROOM_ID DESC
+		limit #{start},#{sum}
+	</select>
+	
+	<!-- 查询玩家战绩总记录数 -->
+	<select id="findUserFightTotal" parameterType="pd" resultType="pd">
+		SELECT count(*) total from m_fight_result WHERE 1=1 
+		<if test="number !=null and number != 888888">
+			and
+			 USER_ID in
+			(SELECT USER_ID FROM m_app_user WHERE YQ_CODE=#{number})
+		</if>
+		<!-- 模糊查询 -->
+		<if test="keywords !=null and keywords!=''">
+			and
+				(
+					<!-- 模糊查询1 -->
+					LOCATE(#{keywords},USER_ID)
+					or
+					<!-- 模糊查询2 -->
+					POSITION(#{keywords} in NICK_NAME)
+					or
+					<!-- 模糊查询3 -->
+					instr(ROOM_ID,#{keywords})
+				)
+		</if>
+		<if test="lastStart!=null and lastStart !=''">
+			and END_TIME &gt;= #{lastStart}
+		</if>
+		<if test="lastEnd!=null and lastEnd !=''">
+			and END_TIME &lt;= #{lastEnd}
+		</if>
+	</select>
+	
+</mapper>

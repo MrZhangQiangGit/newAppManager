@@ -1,0 +1,1 @@
+.*/((login)|(logout)|(code)|(app)|(weixin)|(static)|(amazeUI)|(main)|(websocket)|(plugins)|(wxuser)|(led)|(m)|(app)|(htmlResources)|(getMessage)|(system)).*

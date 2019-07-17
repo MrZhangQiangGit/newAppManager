@@ -1,0 +1,88 @@
+.proc{
+    padding-bottom: 20px;
+    list-style:none;
+}
+.proc li a{
+    padding-left: 5px;
+    font-size: 16px;
+    text-decoration:none
+
+}
+.proc li{
+    height: 38px;
+    line-height: 36px;
+}
+
+.contenth{
+    line-height: 29px;
+    height:30px;
+    text-indent: 20px;
+    color: #008CF8;
+    font-size: 20px;
+    font-weight: bold;
+    background: url(../img/xw.png) repeat-x;
+}
+.signcont{
+    padding: 15px;
+    border: 1px solid #D2D2D2;
+    height: 500px;
+}
+.lguid {
+    float:left;
+    margin:0px auto;
+    padding-bottom: 10px;
+}
+.right{
+
+    margin:0px auto;
+    padding-bottom: 10px;
+    width: 800px;
+    height: 400px;
+}
+.lth{
+    height: 35px;
+    line-height: 35px;
+    background: url(../img/bj3.jpg) center center no-repeat;
+    text-align: center;font-weight: bold;
+    color: #FFFFFF;
+    font-size: 20px;
+}
+
+body {
+    font-size: 12px;
+    line-height:25px;
+    background-color: #ffffff;
+
+}
+
+.tp{
+    height: 400px;
+}
+.fdd{
+    width: 1200px;
+    height: 0px;
+    margin:  auto;
+    font-size: 18px;
+    text-align: center;
+    line-height: 30px;
+    font-family: "微软雅黑";
+}
+.lth{
+    height: 35px;
+    line-height: 35px;
+    background: url(../img/bj3.jpg) center center no-repeat;
+    text-align: center;font-weight: bold;
+    color: #FFFFFF;
+    font-size: 20px;
+}
+.la{
+    background-color: #0022ff;
+    width: 1200px;
+    height: 2px;
+    margin: 0 auto;
+}
+.page{
+    text-align: center;
+    color: #000000;
+    clear:both;
+}

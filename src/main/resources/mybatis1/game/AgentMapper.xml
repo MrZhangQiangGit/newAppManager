@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AgentMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		m_agent
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		AGENT_CODE,	
+		AGENT_NAME,	
+		STATUS,
+		CASH_MONEY,
+		SURPLUS_MONEY,
+		TOTAL_MONEY,
+		SEX,	
+		PHONE_NO,	
+		WX_CODE,	
+		P_ID,	
+		RECOMMAND_ID,
+		LEVEL,	
+		CARD_NUM,	
+		SALE_TOTAL,	
+		PROFIT,
+		UP_PROFIT,
+		YQ_CODE,
+		CREATOR,	
+		CREATOR_TIME,	
+		UPDATOR,	
+		UPDATOR_TIME
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{AGENT_CODE},	
+		#{AGENT_NAME},
+		#{STATUS},
+		#{CASH_MONEY},
+		#{SURPLUS_MONEY},
+		#{TOTAL_MONEY},
+		#{SEX},	
+		#{PHONE_NO},	
+		#{WX_CODE},	
+		#{P_ID},	
+		#{RECOMMAND_ID},	
+		#{LEVEL},
+		#{CARD_NUM},	
+		#{SALE_TOTAL},
+		#{PROFIT},	
+		#{UP_PROFIT},
+		#{YQ_CODE},
+		#{CREATOR},	
+		#{CREATOR_TIME},	
+		#{UPDATOR},	
+		#{UPDATOR_TIME}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			AGENT_CODE = #{AGENT_CODE}
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			SEX = #{SEX},
+			PHONE_NO = #{PHONE_NO},
+			RECOMMAND_ID = #{RECOMMAND_ID},
+			AGENT_NAME=#{AGENT_NAME},
+			UP_PROFIT=#{UP_PROFIT},
+			PROFIT = #{PROFIT},
+			STATUS = #{STATUS},
+			UPDATOR = #{UPDATOR},
+			UPDATOR_TIME = #{UPDATOR_TIME}
+		where 
+		AGENT_CODE = #{AGENT_CODE}
+	</update>
+	
+	<!-- 修改被充值人的房卡 -->
+	<update id="edit1" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			CARD_NUM = #{card_num_jia}
+		where 
+		AGENT_CODE = #{AGENT_CODE}
+	</update>
+	
+	<!-- 修改登陆人的房卡 -->
+	<update id="edit2" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			CARD_NUM = #{card_num_sheng}
+		where 
+		AGENT_CODE = #{number}
+	</update>
+	
+	<!-- 修改登陆人的售卡 -->
+	<update id="edit3" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			SALE_TOTAL = #{total_jia}
+		where 
+		AGENT_CODE = #{number}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			AGENT_CODE = #{AGENT_CODE}
+	</select>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findByNumber" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			AGENT_CODE = #{number}
+	</select>
+	
+		<!-- 通过user_id获取剩余房卡数量 -->
+	<select id="findByUserId" parameterType="pd" resultType="pd">
+		select ROOM_CARD from m_app_user
+		where 
+			USER_ID = #{AGENT_CODE}
+	</select>
+	
+	<!-- 通过user_id获取微信和名字 -->
+	<select id="findNameByUserId" parameterType="java.lang.String" resultType="pd">
+		select NICK_NAME,OPENID from m_app_user
+		where 
+			USER_ID = #{id}
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where  P_ID = #{pd.id} 
+		<!-- <if test="pd.name!=null and pd.name !='admin'">
+			and CREATOR = #{pd.name} or AGENT_CODE=#{pd.id}
+		</if> -->
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					AGENT_CODE LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					AGENT_NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+					or 
+					CREATOR LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+				)
+		</if>
+		<if test="pd.lastStart!=null and pd.lastStart !=''">
+			and CREATOR_TIME &gt;= #{pd.lastStart}
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd !=''">
+			and CREATOR_TIME &lt;= #{pd.lastEnd}
+		</if>
+		order by P_ID,LEVEL 
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+	</select>
+	
+	<!-- 列表（除自己外全部） -->
+	<select id="listAlls" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where AGENT_CODE not in (select AGENT_CODE from m_agent where AGENT_CODE=#{AGENT_CODE})
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			AGENT_CODE in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+	<!-- 修改名字和微信号 -->
+	<update id="editName" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			AGENT_NAME = #{NICK_NAME}
+		where 
+		AGENT_CODE = #{USER_ID}
+	</update>
+	
+	<select id="findByEdit" parameterType="pd" resultType="pd">
+		select * from m_agent
+		where 
+			AGENT_CODE = #{USER_ID}
+	</select>
+	
+	<!-- 查询邀请码 -->
+	<select id="findYqCode" parameterType="pd" resultType="pd">
+		select * from <include refid="tableName"></include>
+		where YQ_CODE = #{YqCode}
+	</select>
+	<!-- 查询代理商级别 -->
+	<select id="finduserlev" parameterType="pd" resultType="pd">
+		select * from m_agent where AGENT_CODE=#{P_ID}
+	</select>
+	<select id="getagent" resultType="pd">
+	    SELECT COUNT(AGENT_CODE) num FROM m_agent WHERE  P_ID=#{AGENT_CODE}
+	    
+	</select>
+	<select id="getplayer" resultType="pd">
+	    SELECT COUNT(MAJUSER_ID) num FROM m_app_user WHERE 1=1 <if test="AGENT_CODE !=888888"> and YQ_CODE=#{YQ_CODE}</if> 
+	</select>
+	<select id="getonlineuser" parameterType="pd" resultType="pd">
+		SELECT COUNT(USER_ID) num  FROM m_fight_result WHERE STATUS=#{online} and START_TIME &lt; #{now} and START_TIME &gt; #{befor} 
+	</select>
+	
+	<!-- 根据邀请码查询 -->
+	<select id="findagentbyqy" parameterType="pd" resultType="pd">
+		select * from <include refid="tableName"></include>
+		where YQ_CODE = #{YqCode} 
+		<if test="CREATOR !='admin'"></if>
+		and CREATOR=#{CREATOR}
+	</select>
+	<!-- 平移用户 -->
+	<update id="upgentyqcode" parameterType="pd" >
+	    update m_app_user set YQ_CODE=#{AAGENT_CODE} where YQ_CODE=#{BAGENT_CODE}
+	</update>
+	<!-- 查询直属代理 -->
+	<select id="getagentbycreat" parameterType="pd" resultType="pd"> 
+	    select * from m_agent where CREATOR=#{CREATOR} limit #{pages},10
+	</select>
+	
+	<!-- 获取代理列表 -->
+	<select id="findAgentList" parameterType="pd" resultType="pd" >
+		select * from m_agent where 1=1
+		<if test="number !=null and number!='888888'">
+			and P_ID=#{number}
+		</if>
+		<if test="keywords !=null and keywords!=''">
+			and
+				(
+					LOCATE(#{keywords},AGENT_CODE)
+					or
+					POSITION(#{keywords} in AGENT_NAME)
+					or
+					instr(CREATOR,#{keywords})
+				)
+		</if>
+		<if test="lastStart!=null and lastStart !=''">
+			and CREATOR_TIME &gt;= #{lastStart}
+		</if>
+		<if test="lastEnd!=null and lastEnd !=''">
+			and CREATOR_TIME &lt;= #{lastEnd}
+		</if>
+		order by LEVEL,UPDATOR_TIME desc
+		limit #{start},#{sum}
+	</select>
+	<!-- 查询代理总数 -->
+	<select id="findTotalAgent" parameterType="pd" resultType="pd">
+		select count(*) total from m_agent where 1=1
+		<if test="number !=null and number!='888888'">
+			and P_ID=#{number}
+		</if>
+		<if test="keywords !=null and keywords!=''">
+			and
+				(
+					AGENT_CODE LIKE CONCAT(CONCAT('%', #{keywords}),'%')
+					 or 
+					AGENT_NAME LIKE CONCAT(CONCAT('%', #{keywords}),'%') 
+					or 
+					CREATOR LIKE CONCAT(CONCAT('%', #{keywords}),'%')
+				)
+		</if>
+		<if test="lastStart!=null and lastStart !=''">
+			and CREATOR_TIME &gt;= #{lastStart}
+		</if>
+		<if test="lastEnd!=null and lastEnd !=''">
+			and CREATOR_TIME &lt;= #{lastEnd}
+		</if>
+	</select>
+	<!-- 修改密码 -->
+	<update id="editSysPwd" parameterType="pd">
+		update sys_user set
+			PASSWORD = #{PASSWORD}
+			where
+			NUMBER = #{NUMBER}
+	</update>
+	
+</mapper>

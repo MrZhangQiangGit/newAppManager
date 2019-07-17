@@ -1,0 +1,45 @@
+/* Write your styles */
+/*样式统一*/
+/* *{
+	margin: 0;
+	padding: 0;
+	border: 0;
+} */
+/* 设置新的盒子模型 */
+/* *,*:before,*:after{
+	-moz-box-sizing:border-box;元素占有宽度:width=padding+border+元素显示宽度
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
+} */
+/*1rem = 10px = 62.5% = ��׼�ֺ�*/
+/* html{font-size: 62.5%;} */
+/*16px*/
+/* body{font-size:1.6rem;} */
+/* 验证码 */
+#codeImg{width:100px; height: 40px;}
+#code{width:120px;}
+/* amaze按钮*/
+.am-btn{margin-left: 2px;}
+/* 页面底部 */
+.foot{
+	padding: 0px;
+}
+.foot li{
+	/* background-color: rgb(240,243,243); */
+	padding-top: 0px;
+}
+/*我的信息下拉面板*/
+#userData{
+	padding: 0px;
+}
+.pwdbtn{
+	width: 40%;
+	
+}
+/*主页菜单按钮按下变色*/
+.menubtn:active{
+	/* background-color: rgb(245,245,245); */
+	position: relative;
+	left: 3px;
+	top: 3px;
+}

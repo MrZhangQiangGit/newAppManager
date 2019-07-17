@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="OnlineStatisticsMapper">
+		<!-- 查询等待数量-->
+	<select id="findByWait" parameterType="pd" resultType="pd">
+		select count(*) A from m_fight_result where STATUS = 1 and START_TIME &lt; #{now} and START_TIME &gt; #{befor}
+	</select>
+	
+	<!-- 查询游戏中数量-->
+	<select id="findByProceed" parameterType="pd" resultType="pd">
+		select count(*) B from m_fight_result where STATUS = 2 and START_TIME &lt; #{now} and START_TIME &gt; #{befor}
+	</select>
+	
+</mapper>

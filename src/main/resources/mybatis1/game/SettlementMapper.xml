@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SettlementMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		m_tran_settlement
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		TRAN_ID,	
+		USER_ID,	
+		USER_NICK_NAME,	
+		TRAN_MONEY,	
+		AGENT_ID,	
+		AGENT_PROFIT_BL,	
+		AGENT_PROFIT_MONEY,	
+		TRAN_CONTENT,	
+		STATUS,	
+		CREATE_TIME,	
+		UPDATE_TIME,	
+		UPDATOR,	
+		ID
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{TRAN_ID},	
+		#{USER_ID},	
+		#{USER_NICK_NAME},	
+		#{TRAN_MONEY},	
+		#{AGENT_ID},	
+		#{AGENT_PROFIT_BL},	
+		#{AGENT_PROFIT_MONEY},	
+		#{TRAN_CONTENT},	
+		#{STATUS},	
+		#{CREATE_TIME},	
+		#{UPDATE_TIME},	
+		#{UPDATOR},	
+		#{ID}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			ID = #{ID}
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			TRAN_ID = #{TRAN_ID},
+			USER_ID = #{USER_ID},
+			USER_NICK_NAME = #{USER_NICK_NAME},
+			TRAN_MONEY = #{TRAN_MONEY},
+			AGENT_ID = #{AGENT_ID},
+			AGENT_PROFIT_BL = #{AGENT_PROFIT_BL},
+			AGENT_PROFIT_MONEY = #{AGENT_PROFIT_MONEY},
+			TRAN_CONTENT = #{TRAN_CONTENT},
+			STATUS = #{STATUS},
+		ID = ID
+		where 
+		ID = #{ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			ID = #{ID}
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 1=1
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+				
+					<!-- TRAN_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					USER_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+					or  -->
+					AGENT_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+				
+				)
+		</if>
+		<if test="pd.lastStart!=null and pd.lastStart!='' ">
+			and CREATE_TIME &gt;= #{pd.lastStart} 
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd!=''">
+			and CREATE_TIME &lt;= #{pd.lastEnd} 
+		</if>
+		<if test="pd.today !=null and pd.today !=''">
+			and 
+			CREATE_TIME LIKE CONCAT( #{pd.today},'%') 
+		</if>
+		<if test="pd.CREATOR !=null and pd.CREATOR !='' ">
+		 	and   AGENT_ID=#{pd.CREATOR} 
+		</if>
+		<if test="pd.ctype !=null and pd.ctype !=''">
+		    and  PROFIT_TYPE=#{pd.ctype}
+		</if>
+		order by STATUS,AGENT_ID,CREATE_TIME DESC
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		order by STATUS,AGENT_ID
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	<!-- 修改 -->
+	<update id="updatestatus" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			UPDATE_TIME=#{UPDATE_TIME},	
+			UPDATOR=#{UPDATOR},	
+			STATUS = #{STATUS}
+		where 
+		ID = #{ID}
+	</update>
+	<!-- 微信充值金额 -->
+	<select id="wxrecharge" parameterType="pd" resultType="pd">
+		select SUM(TRAN_MONEY) money from m_tran_detail where STATUS=3
+		<if test="times !='' and times !=null">
+		  and
+		 CREATE_TIME LIKE CONCAT( #{times},'%') <!-- and CREATOR = #{CREATOR} -->
+		 </if>
+	</select>
+	
+</mapper>

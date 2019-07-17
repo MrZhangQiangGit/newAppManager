@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="RoomNumberMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		m_fight_result
+	</sql>
+	
+	<!-- 判断房间是否存在 -->
+	<select id="judge" parameterType="String" resultType="int">
+		select count(*) from 
+		<include refid="tableName"></include>
+		where ROOM_ID = #{ROOM_ID1}
+	</select>
+	<!-- 重置房间状态 -->
+	<update id="reset" parameterType="String" >
+		update
+		<include refid="tableName"></include>
+		set STATUS = 3  where  ROOM_ID = #{ROOM_ID1}
+	</update>
+	<!-- #{ROOM_ID1}与RoomNumberController中方法传递的参数一致，后者与roomNumber_list.jsp中$.ajax传递的参数名一致 -->
+	
+</mapper>

@@ -1,0 +1,27 @@
+/* Write your styles */
+/*统一样式*/
+*{
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+/* 设置盒子模型类型 */
+*,*:before,*:after{
+	-moz-box-sizing:border-box;/*元素的宽度:width=padding+border+元素宽度 */
+	-webkit-box-sizing:border-box;
+	box-sizing:border-box;
+}
+/*1rem = 10px = 62.5% = 基准字号*/
+html{font-size: 62.5%;}
+/*16px*/
+body{font-size:1.6rem;}
+#codeImg{width:100px; height: 40px;}
+#code{width:120px;}
+.am-btn{margin-left: 2px;}
+#top{
+}
+.top-dropdown{
+	z-index:1010;
+	position: absolute;
+	right: 10%;
+}

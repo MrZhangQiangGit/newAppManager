@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>Login Page | bets</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <link rel="alternate icon" type="image/png" href="../amazeUI/i/examples/landing.png">
+  <link rel="stylesheet" href="../amazeUI/css/amazeui.min.css"/>
+  <link rel="stylesheet" type="text/css" href="../amazeUI/css/app.css" >
+  <style>
+    .header {
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 200%;
+      color: #333;
+      margin-top: 30px;
+    }
+    .header p {
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<div class="header">
+  <div class="am-g">
+    <h1>手机适用管理平台</h1>
+    <p>Mobile phone application management platform<br/>代理管理，玩家信息，数据更新，财务统计</p>
+  </div>
+  <hr />
+</div>
+<div class="am-g">
+  <div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+    <h3>登录122</h3>
+    <hr>
+    <!-- <div class="am-btn-group">
+      <a href="#" class="am-btn am-btn-secondary am-btn-sm"><i class="am-icon-github am-icon-sm"></i> Github</a>
+      <a href="#" class="am-btn am-btn-success am-btn-sm"><i class="am-icon-google-plus-square am-icon-sm"></i> Google+</a>
+      <a href="#" class="am-btn am-btn-primary am-btn-sm"><i class="am-icon-stack-overflow am-icon-sm"></i> stackOverflow</a>
+    </div> -->
+    <br>
+    <form method="post" class="am-form am-form-horizontal" id="loginForm">
+    	<div class="am-form-group">
+    		<!-- label标签占3等分,sm时文字左对齐 ,md时文字右对齐 -->
+	      <label for="email" class="am-form-label am-u-sm-3 am-u-md-2 am-sm-text-left am-md-text-center ">账号:</label>
+	      <div class="am-u-sm-9 am-u-md-10" >
+		      <input id="loginname" type="text" name="loginname" id="email">
+	      </div>
+    	</div>
+      <br>
+      <div class="am-form-group">
+	      <label for="password" class="am-form-label am-u-sm-3 am-u-md-2 am-sm-text-left am-md-text-center ">密码:</label>
+	      <div class="am-u-sm-9 am-u-md-10">
+		      <input id="password" type="password" name="password" id="password">
+	      </div>
+      </div>
+      <br>
+      <div class="am-cf" >
+      	<div class="am-fl">
+	      <label for="remember-me">
+	        <input id="remember-me" type="checkbox">
+	        	记住密码
+	      </label>
+      	</div>
+	      <div class="am-fr am-cf">
+	      	<div class="am-fl">
+		      	<input type="text" placeholder="验证码" id="code" name="code" >
+	      	</div>
+	      	<div class="am-fr">
+				<img id="codeImg" src="../amazeUI/i/code.jpg">
+				<!-- <img style="" id="codeImg" alt="点击更换" title="点击更换" src="" /> -->
+	      	</div>
+		  </div>
+      </div>
+      <br />
+      <div class="am-cf">
+        <input onclick="login();" type="button" name="" value="登 录" class="am-btn am-btn-primary am-btn-sm am-radius am-fl">
+        <input onclick="cancel();" type="button" name="" value="取 消" class="am-btn am-btn-danger am-btn-sm am-radius am-fl">
+        <input type="button" name="" value="忘记密码 ^_^? " class="am-btn am-btn-default am-btn-sm am-fr">
+      </div>
+    </form>
+    <hr>
+    <p class="am-u-sm-centered am-center">Copyright ©  2018</p>
+  </div>
+</div>
+</body>
+<script type="text/javascript" src="../amazeUI/js/jquery.min.js"></script>
+<script type="text/javascript" src="../amazeUI/js/amazeui.js"></script>
+<!-- <script type="text/javascript" src="../static/ace/js/jquery.js"></script> -->
+<script type="text/javascript" src="../static/js/jquery.tips.js"></script>
+<script type="text/javascript">
+	//登录
+	function login(){
+		var loginname = $("#loginname").val();
+		var password = $("#password").val();
+		var code = $("#code").val();
+		if(loginname == ''){
+			$('#loginname').popover({
+			    content: '输入登录账号!',
+			    theme:'warning sm'
+			}).popover('open'); 
+			return false;
+		}
+		if(password ==''){
+			$('#password').popover({content:'请输入密码!',theme:'danger sm'}).popover('open');
+			return false;
+		}
+		if(code ==''){
+			$('#code').popover({content:'请输入验证码!',theme:'danger sm'}).popover('open');
+			return false;
+		}
+		window.location.href='../agentAppDemo/goMainIndex.do';
+	}
+	//取消登录
+	function cancel() {
+		$("#loginname").val('');
+		$("#password").val('');
+	}
+	/* $(function() {
+		  $('#loginname').popover({
+		    content: '输入登录账号!',
+		    theme:'warning sm'
+		  })
+		}); */
+</script>
+</html>

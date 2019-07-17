@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TranDetailMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		m_tran_detail
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		USER_ID,	
+		USER_NICK_NAME,	
+		TRAN_MONEY,	
+		TRAN_CONTENT,	
+		AGENT_USER_ID,	
+		STATUS,
+		CREATE_TIME,	
+		IS_JIESUAN,	
+		UPDATE_TIME,	
+		UPDATOR,	
+		TRAN_ID
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{USER_ID},	
+		#{USER_NICK_NAME},	
+		#{TRAN_MONEY},	
+		#{TRAN_CONTENT},	
+		#{AGENT_USER_ID},	
+		#{STATUS},
+		#{CREATE_TIME},	
+		#{IS_JIESUAN},	
+		#{UPDATE_TIME},	
+		#{UPDATOR},	
+		#{TRAN_ID}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			TRAN_ID = #{TRAN_ID}
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			IS_JIESUAN = #{IS_JIESUAN}
+		where 
+		TRAN_ID = #{TRAN_ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			TRAN_ID = #{TRAN_ID}
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 1=1
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+				
+					<!-- TRAN_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					USER_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or  -->
+					AGENT_USER_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')  
+				
+				)
+		</if>
+		<if test="pd.lastStart!=null and pd.lastStart!='' ">
+			and CREATE_TIME &gt;= #{pd.lastStart} 
+			</if>
+			<if test="pd.lastEnd!=null and pd.lastEnd!=''">
+				and CREATE_TIME &lt;= #{pd.lastEnd} 
+			</if>
+			<if test="pd.today !=null and pd.today !=''">
+			and 
+			CREATE_TIME LIKE CONCAT( #{pd.today},'%') 
+			</if>
+		<if test="pd.AGENT_USER_ID ==888888 ">
+			and (AGENT_USER_ID =#{pd.AGENT_USER_ID} 
+			or AGENT_USER_ID in (SELECT AGENT_CODE FROM m_agent WHERE P_ID=#{pd.AGENT_USER_ID} )
+			 or AGENT_USER_ID in (
+				SELECT AGENT_CODE from m_agent WHERE P_ID in (SELECT AGENT_CODE FROM m_agent WHERE P_ID=#{pd.AGENT_USER_ID}  )))
+		</if>
+		<if test="pd.AGENT_USER_ID !=888888 and pd.ctype ==2 ">
+		    and AGENT_USER_ID =#{pd.AGENT_USER_ID}
+		</if>
+		<if test="pd.AGENT_USER_ID !=888888 and pd.ctype ==1 ">
+		    and AGENT_USER_ID in (SELECT AGENT_CODE FROM m_agent WHERE P_ID=#{pd.AGENT_USER_ID} )
+			 or AGENT_USER_ID in (
+				SELECT AGENT_CODE from m_agent WHERE P_ID in (SELECT AGENT_CODE FROM m_agent WHERE P_ID=#{pd.AGENT_USER_ID}  )) 
+		</if>
+		order by STATUS DESC,IS_JIESUAN,CREATE_TIME DESC
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			TRAN_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	<!-- 查询未结算账单 -->
+	<select id="selectbyjs" resultType="pd">
+		select * from m_tran_detail where IS_JIESUAN=0 and STATUS=3
+	</select>
+	<!-- 插入分润信息 -->
+	<insert id="addsettlement" parameterType="pd">
+		insert into m_tran_settlement (ID,TRAN_ID,USER_ID,USER_NICK_NAME,TRAN_MONEY,AGENT_ID,AGENT_PROFIT_BL,AGENT_PROFIT_MONEY,TRAN_CONTENT,STATUS,CREATE_TIME,PROFIT_TYPE) 
+			values (#{ID},#{TRAN_ID},#{USER_ID},#{USER_NICK_NAME},#{TRAN_MONEY},#{AGENT_ID},#{AGENT_PROFIT_BL},#{AGENT_PROFIT_MONEY},#{TRAN_CONTENT},#{STATUS},#{CREATE_TIME},#{PROFIT_TYPE}) 
+	</insert>
+	<!-- 结算代理商为空的记录 -->
+	<update id="updatnoeagent">
+		update
+		m_tran_detail
+		set 
+			IS_JIESUAN = 1
+		where STATUS=3 and IS_JIESUAN=0 and
+		AGENT_USER_ID = ""
+	</update>
+	<!-- 更新代理售卡金额 -->
+	<update id="updateagentmoney" parameterType="pd">
+	    update m_agent set TOTAL_MONEY=TOTAL_MONEY+#{AGENT_PROFIT_MONEY},SURPLUS_MONEY = SURPLUS_MONEY+#{AGENT_PROFIT_MONEY} where AGENT_CODE=#{AGENT_ID}
+	</update>
+	
+	<!-- 查询从下级代理分润所得金额 -->
+	<select id="getprofitmoneybytype" parameterType="pd" resultType="pd">
+		SELECT SUM(AGENT_PROFIT_MONEY) money FROM m_tran_settlement WHERE 
+		    AGENT_ID=#{AGENT_ID} AND PROFIT_TYPE=#{PROFIT_TYPE}
+		    <if test="lastStart!=null and lastStart!='' ">
+			and CREATE_TIME &gt;= #{lastStart} 
+			</if>
+			<if test="lastEnd!=null and lastEnd!=''">
+				and CREATE_TIME &lt;= #{lastEnd} 
+			</if>
+			<if test="today !=null and today !=''">
+			and 
+			CREATE_TIME LIKE CONCAT( #{today},'%') 
+			</if>
+	</select>
+	
+	<!-- 查询代理线上业绩 -->
+	<select id="getperformance" parameterType="pd" resultType="pd">
+	    SELECT sum(TRAN_MONEY) money FROM m_tran_detail WHERE  STATUS=3
+		    <if test="P_TYPE ==1">
+		        and AGENT_USER_ID = #{AGENT_ID}
+		    </if>
+		     <if test="P_TYPE ==2">
+		       and (AGENT_USER_ID in 
+				(SELECT AGENT_CODE FROM m_agent WHERE P_ID=#{AGENT_ID}) OR AGENT_USER_ID IN
+				(SELECT agent_code FROM m_agent WHERE p_id IN 
+				(SELECT AGENT_CODE FROM m_agent WHERE P_ID=#{AGENT_ID})
+				))
+		    </if>
+		    <if test="lastStart!=null and lastStart!='' ">
+			and CREATE_TIME &gt; #{lastStart} 
+			</if>
+			<if test="lastEnd!=null and lastEnd!=''">
+				and CREATE_TIME &lt;  #{lastEnd} 
+			</if>
+			<if test="today !=null and today !=''">
+			and 
+			CREATE_TIME LIKE CONCAT( #{today},'%') 
+			</if>
+	</select>
+</mapper>

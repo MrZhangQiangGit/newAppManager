@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body ng-app="myAngular" ng-controller="myController">
+		<div >
+			信息:<input type="text" ng-model="testModel" />
+			<p>输入为:{{testModel}}</p>
+			输入选择:<input type="text" ng-model="selected" />
+			<select ng-model="selected">
+				<option value="1">哟死</option>
+				<option value="2">SHAbima</option>
+				<option value="3">???</option>
+			</select>
+			<p>选择:{{selected}}</p>
+		</div>
+		<!--
+        	作者：1259319890@qq.com
+        	时间：2017-11-23
+        	描述：自定义指令体现
+        -->
+		元素名E:<test-one ng-click="dianwo();">可以点我</test-one>
+		属性A:<div test-one></div>
+		类名C:<div class="test-one"></div>
+                        注释M:<!-- directive:test-one -->
+        <!--
+        	作者：1259319890@qq.com
+        	时间：2017-11-24
+        	描述：重复html,ng-repeat
+        -->          
+        <table>
+        	<tr ng-repeat="x in indexs">
+        		<td>这是第{{x}}个循环,ng-repeat!</td>
+        	</tr>
+        </table> 
+        <!--
+        	作者：1259319890@qq.com
+        	时间：2017-11-24
+        	描述：控制器方法
+        -->
+        <div ng-controller="myController1">
+        	请输入:<input type="text" ng-model="suntest" />
+			<p>控制器方法:{{sun()}}</p>	        	
+        </div>
+        <!--
+        	作者：1259319890@qq.com
+        	时间：2017-11-24
+        	描述：过滤器
+        -->
+        <div ng-controller="filter" >
+        	<!-- 转大写 -->
+        	<p>姓名:{{name | uppercase}}</p>
+        	<!-- 转小写 -->
+        	<p>email:{{email | lowercase}}</p>
+        	<!-- 转换货币格式 -->
+        	<p>数量: <input type="number" ng-model="sum" /> </p>
+        	<p>单价: <input type="number" ng-model="price" /></p>
+        	<p>总价={{(sum * price) | currency}}</p>
+        	<!-- 向指令中添加过滤器 -->
+        	筛选:<input type="text" ng-model="hobby" />
+        	<ol>
+        		<!-- filter:过滤不含有筛选输入框中的元素,order:排序 -->
+        		<li ng-repeat="x in hobbys | filter:hobby | orderBy">
+        			爱好:{{x}}
+        		</li>
+        	</ol>
+        	<!-- 自定义过滤器--> 
+        	<p>自定义过滤器:原先为Rinoob 经过过滤后为{{sex | reverse}}</p>
+        </div>
+        	<!-- 过滤器排序-->
+        	<ul>
+			    <li ng-repeat="x in agesIds | orderBy:'age'">
+					<p>
+			         年龄:{{x.age}} 
+			      </p>
+			      <p>
+			        id:{{x.id}}
+			      </p>
+			      <p>
+			        姓名:{{x.name}}
+			      </p>
+			    </li>
+		  	</ul>
+        <div>
+        	<h1>UpUp</h1>
+        </div>
+	</body>
+	<script src="http://cdn.static.runoob.com/libs/angular.js/1.4.6/angular.min.js"></script> 
+	<script>
+		/*
+		 * 自定义指令
+		 */
+		var app = angular.module('myAngular',[]);
+		app.directive("testOne",function(){
+			return{
+				restrict:"EACM",
+				replace:true,//只有设置为true注释才显示
+				template:"<h1>我是一个自定义指令!</h1>"
+			};
+		});
+		app.controller("myController",function($scope){
+			$scope.dianwo = function(){
+				$scope.testModel= $scope.selected;
+			};
+			$scope.indexs = ["1","2","3","4","5","6"];
+			$scope.agesIds = [{"age": 20,"id": 10,"name": "iphone"},
+				{"age": 12,"id": 11,"name": "sunm xing"},
+				{"age": 44,"id": 12,"name": "test abc"}];
+		});
+		//可以用上面的控制器的模型
+		app.controller("myController1",function($scope){
+			$scope.sun = function(){
+				return	$scope.testModel;
+			};
+		});
+		//过滤器
+		app.controller("filter",function($scope){
+			$scope.name="leiNie";
+			$scope.age ="21";
+			$scope.sex = "Rinoob";
+			$scope.email = "1259319890@QQ.COM";
+			$scope.hobbys = ["game","playGame","happy","upup",];
+		});
+		//自定义过滤器
+		app.filter("reverse",function(){
+			return function(text){
+				return text.split("").reverse().join("");
+			};
+		});
+	</script>
+</html>

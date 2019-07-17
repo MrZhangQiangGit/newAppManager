@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+	<title>首页</title>
+	<link rel="stylesheet" type="text/css" href="../htmlResources/css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../htmlResources/css/common_dazong.css" />
+	<link rel="stylesheet" type="text/css" href="../htmlResources/css/common_jincheng.css" />
+	<link rel="stylesheet" type="text/css" href="../htmlResources/css/top.css" />
+	<!-- bootstrap & fontawesome -->
+	<link rel="stylesheet" href="../static/ace/css/bootstrap.css" />
+	<!-- 头像下拉菜单字体图标样式 -->
+	 <link rel="stylesheet" href="../static/ace/css/font-awesome.css" />
+	<!-- page specific plugin styles -->
+	<!-- text fonts -->
+	<link rel="stylesheet" href="../static/ace/css/ace-fonts.css" />
+	<!-- ace styles 头像对其样式 -->
+	<link rel="stylesheet" href="../static/ace/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+	<style>
+		html, body {width: 100%;min-height: 100%;background: #f0f0f0;}
+		.h20 {height: 20px;}
+    	.h10 {height: 5px;background: #f0f0f0;}
+
+		/* 2X2样式 */
+		.hightitem {background-color: #fff;}
+		.row {display: -webkit-box;display: -webkit-flex; flex-flow:row wrap;}
+		.col {-webkit-box-flex:1; -webkit-flex:1; flex:1;position: relative;}
+		.col img {width: 24px; vertical-align: top; margin-top: 13px; margin-right: 10px;}
+		.col .matrixcell {display: table-cell;vertical-align: middle; padding-left: 10px;}
+		.col .matrixcell .title {margin-bottom: 10px;}
+
+		/* 2. 5列 */
+		.scratch02 .word {padding: 10px 0;}
+		.scratch02 .word .title{font-size: 14px;}
+		.scratch02 .word .info{font-size: 12px;color: #666;}
+		.scratch02 img {width: 34px; height: 34px; margin: 0;}
+		.showposter {text-align: center;margin-top: 5px;}
+		.scratch02 .col {text-align: center;}
+		.scratch02 .br {border-right: 1px solid #e0e0e0;}
+		.scratch02 .bb {border-bottom: 1px solid #e0e0e0;}
+		/*
+		 * 列表
+		 */
+		.lighttitle {
+			height: 50px;
+			line-height: 50px;
+			padding-left: 10px;
+			background-color: #fff;
+			/*#7171C6*/
+			border-bottom: 1px solid #e0e0e0;
+			/*font-family: Times, TimesNR, 'New Century Schoolbook',Georgia, 'New York', serif;*/
+			/*设置字体加粗*/
+			font-weight:700;
+			}
+		.lighttitle img{
+			height: 30px;
+			width: 30px;
+			/*垂直居中*/
+			vertical-align:middle;
+		}
+		.sub {height: 30px;line-height: 30px;}
+		.darktitle {color: #666;font-size: 14px;padding-left: 10px;}
+		.darktitle img {width: 20px;vertical-align: top;margin: 5px 0 0 5px;}
+
+		.presshover {background-color: #FAFAFA !important;}
+		#main{padding: 5px;}
+		#header{ 
+			display: -webkit-flex;
+			display: flex;
+			justify-content:  space-between;
+			align-items:center; 
+			height: 40px;
+			background-color: #5CACEE;
+		}
+		#header span{
+			 font-size: 20px;
+		    height: 44px; line-height: 44px; margin: 0em; color: #fff;
+		}
+		#out{
+			display:flex;
+			display: -webkit-flex;
+			justify-content:flex-start;
+			color:#fff;
+			align-items:center;
+		}
+		.light-blue{float: right;}
+	</style>
+</head>
+<body ng-app="mainApp" ng-controller="mainSelect" >
+	<div id="wrap">
+		<!-- 顶部导航栏 -->
+		 <!-- <iframe src="../html/html/index/top.html" frameborder="0" scrolling="no"></iframe>  -->
+        <div id="header">
+           <div id="out" onclick="logout()">
+           		<!-- <a class="back-icon" tapmode="" ></a> -->
+           		<!-- <img alt="" src="../htmlResources/images/JinCheng_image/arr-l.png">|退出登录 -->
+           		<img style="width: 30px;height: 30px;" alt="" src="../htmlResources/images/WangYi_image/cm2_icn_back.png">|退出登录
+           </div>
+            <span>{{sysName}}</span>
+            <div class="light-blue">
+				<a data-toggle="dropdown"  class="dropdown-toggle" href="#" onclick="display();">
+					<img class="nav-user-photo" src="../static/ace/avatars/user.jpg" alt="Jason's Photo" />
+					<span class="user-info" id="user_info">
+					</span>
+					<i class="ace-icon fa fa-caret-down"></i>
+				</a>
+				<ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close" id="user-menu">
+					
+					<li>
+						<a onclick="editUserH();" style="cursor:pointer;"><i class="ace-icon fa fa-cog"></i>修改资料</a><!-- editUserH()在 WebRoot\static\js\myjs\head.js中 -->
+					</li>
+					<li id="systemset">
+						<a onclick="editSys();" style="cursor:pointer;"><i class="ace-icon fa fa-user"></i>系统设置</a><!-- editSys()在 WebRoot\static\js\myjs\head.js中 -->
+					</li>
+					<li class="divider"></li>
+					<li>
+						<a href="../logoutApp"><i class="ace-icon fa fa-power-off"></i>退出登录</a>
+					</li>
+				</ul>
+			</div>
+        </div>
+        <!-- 菜单列表 -->
+        <div id="main">
+			<div class="h10"></div>
+			<div class="lighttitle">
+				<img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate01_01.png" alt="">
+				用户管理
+			</div>
+			<div class="row hightitem scratch02">
+				<div class="col br bb"  tapmode="presshover" onclick="goTestLogin();">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_01.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">系统用户</div>
+					</div>
+				</div>
+				<div class="col br bb"  tapmode="presshover" onclick="javascript:window.location.href='../agentApp/list.do'">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_02.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title" onclick="">代理管理</div>
+					</div>
+				</div>
+				<div class="col br bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_03.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">玩家信息</div>
+					</div>
+				</div>
+				<div class="col br bb"  tapmode="presshover" onclick="demo()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_03.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">测试</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- 平台管理-->
+			<div class="h10"></div>
+			<div class="lighttitle">
+				<img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate01_04.png" alt="">
+				平台管理
+			</div>
+			<div class="row hightitem scratch02">
+				<div class="col br bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_01.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">活动公告</div>
+					</div>
+				</div>
+				<div class="col br bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_02.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">免费开房</div>
+					</div>
+				</div>
+				<div class="col br bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_03.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">房间战绩</div>
+					</div>
+				</div>
+				<div class="col bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_04.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">游戏重置</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- 财务管理-->
+			<div class="h10"></div>
+			<div class="lighttitle">
+				<img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate01_03.png" alt="">
+				财务管理
+			</div>
+			<div class="row hightitem scratch02">
+				<div class="col br bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_01.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">代理充币</div>
+					</div>
+				</div>
+				<div class="col br bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_02.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">玩家充币</div>
+					</div>
+				</div>
+				<div class="col br bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_03.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">房卡消费记录</div>
+					</div>
+				</div>
+				<div class="col bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_04.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">线上充值记录</div>
+					</div>
+				</div>
+			</div>
+			<div class="row hightitem scratch02">
+				<div class="col br bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_05.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">结算</div>
+					</div>
+				</div>
+				<div class="col br bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_06.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">提现</div>
+					</div>
+				</div>
+				<div class="col br bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_07.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">购卡记录</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- 统计-->
+			<div class="h10"></div>
+			<div class="lighttitle">
+				<img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate01_05.png" alt="">
+				统计
+			</div>
+			<div class="row hightitem scratch02">
+				<div class="col br bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_01.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">金额统计</div>
+					</div>
+				</div>
+				<div class="col br bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_02.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">在线充值统计</div>
+					</div>
+				</div>
+				<div class="col br bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_03.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">线下充值统计</div>
+					</div>
+				</div>
+				<div class="col bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_04.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">线上充值月报表</div>
+					</div>
+				</div>
+			</div>
+			<div class="row hightitem scratch02">
+				<div class="col br bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_05.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">线下重置月报表</div>
+					</div>
+				</div>
+				<div class="col br bb"  tapmode="presshover" onclick="openDetail()">
+					<div class="showposter"><img src="../htmlResources/images/DaZongDianPing_image/decorate/decorate02_06.png" alt="" class=""></div>
+					<div class="word">
+						<div class="title">在线人数</div>
+					</div>
+				</div>
+			</div>
+			
+			
+			<!-- 2 5列 -->
+			<div class="h10"></div>
+		
+			<!-- 3 列表 -->
+			<div class="sub darktitle">猜你喜欢<img src="../htmlResources/images/DaZongDianPing_image/home_competitive_icon.png" alt=""></div>
+	
+		</div>
+    </div>
+	
+</body>
+<script src="../static/js/jquery-1.7.2.js"></script>
+<script type="text/javascript" scr="../htmlResources/script/api.js"></script>
+<!-- <script src="http://cdn.static.runoob.com/libs/angular.js/1.4.6/angular.min.js"></script> -->
+<script src="../htmlResources/js/angular.min.js"></script>
+<script>
+	var app = angular.module('mainApp',[]);
+	app.controller('mainSelect',function($scope,$http){
+		$scope.sysName="what are you doing?";
+		var url = "../agentApp/getMessage.do";
+		$http.get(url).success(function(data){
+			console.log(data[0].SYSNAME);
+			$scope.sysName=data[0].SYSNAME;
+		});
+	});
+	//角色设置修改退出菜单按钮
+	function display(){
+		$("#user-menu").toggle();;
+	}
+	function demo(){
+		window.location.href="../agentApp/goDemo.do";
+	}
+	function goTestLogin(){
+		window.location.href="../agentAppDemo/goTestLogin.do";
+	}
+	//退出登录
+	function logout(){
+		window.herf="../logoutApp.do";
+	}
+</script>
+</html>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cardStatisticsMapper">
+	<!-- 模糊查询今天的售卡总计-->
+	<select id="findByToday" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) A from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{CREATOR_TIME1},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	<select id="findByToday2" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) A2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{CREATOR_TIME1},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	
+	<!-- 模糊查询昨天的售卡总计-->
+	<select id="findByYesterday" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) B from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{CREATOR_TIME2},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	<select id="findByYesterday2" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) B2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{CREATOR_TIME2},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	
+	<!-- 模糊查询售卡总计-->
+	<select id="findBySum" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) C from m_play_recharge where CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	<select id="findBySum2" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) C2 from m_agent_recharge where CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	
+	<!-- 1月-->
+	<select id="findByJanuary" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) January from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{one},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	<select id="findByJanuary2" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) January2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{one},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	
+	<!-- 2月-->
+	<select id="findByFebruary" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) February from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{two},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	<select id="findByFebruary2" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) February2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{two},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	
+	<!-- 3月-->
+	<select id="findByMarch" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) March from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{three},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	<select id="findByMarch2" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) March2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{three},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	
+	<!-- 4月-->
+	<select id="findByApril" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) April from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{four},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	<select id="findByApril2" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) April2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{four},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select> 
+	
+	<!-- 5月-->
+	<select id="findByMay" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) May from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{five},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	<select id="findByMay2" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) May2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{five},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	
+	<!-- 6月-->
+	<select id="findByJune" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) June from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{six},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	<select id="findByJune2" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) June2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{six},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	
+	<!-- 7月-->
+	<select id="findByJuly" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) July from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{seven},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	<select id="findByJuly2" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) July2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{seven},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	
+	<!-- 8月-->
+	<select id="findByAugust" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) August from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{eight},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	<select id="findByAugust2" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) August2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{eight},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	
+	<!-- 9月-->
+	<select id="findBySeptember" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) September from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{nine},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	<select id="findBySeptember2" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) September2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{nine},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	
+	<!-- 10月-->
+	<select id="findByOctober" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) October from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{ten},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	<select id="findByOctober2" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) October2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{ten},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	
+	<!-- 11月-->
+	<select id="findByNovember" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) November from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{eleven},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	<select id="findByNovember2" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) November2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{eleven},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	
+	<!-- 12月-->
+	<select id="findByDecember" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) December from m_play_recharge where CREATOR_TIME LIKE CONCAT( #{twevle},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	<select id="findByDecember2" parameterType="pd" resultType="pd">
+		select SUM(CHARGE_NUM) December2 from m_agent_recharge where CREATOR_TIME LIKE CONCAT( #{twevle},'%') and CREATOR = #{CREATOR} and CHARGE_TYPE=1
+	</select>
+	
+	<!-- 平台售卡统计 -->
+	<select id="totalsalecards" parameterType="page" resultType="pd">
+	     SELECT SUM(CHARGE_NUM) num,CHARGE_TYPE,SUM(MONEY) money FROM m_agent_recharge 
+	     where CREATOR='admin'
+	  <if test="pd.lastStart !=null and pd.lastStart !=''">
+		   and
+		   CREATOR_TIME &gt; #{pd.lastStart}
+		</if>
+		<if test="pd.lastEnd !=null and pd.lastEnd !=''">
+		   and
+		   CREATOR_TIME &lt; #{pd.lastEnd}
+		</if>
+		<if test="pd.today !=null and pd.today !=''">
+			and 
+			CREATOR_TIME LIKE CONCAT( #{pd.today},'%') 
+		</if>
+	     group by CHARGE_TYPE
+	</select>
+	<!-- 售卡日统计 -->
+	<select id="cardsalestatisticslistPage" parameterType="page" resultType="pd">
+	  SELECT SUM(CHARGE_NUM) num,CHARGE_TYPE,SUM(MONEY) money,DATE_FORMAT(CREATOR_TIME,'%Y-%m-%d') As CREATOR_TIME1  FROM m_agent_recharge 
+	  where CREATOR='admin'
+	  <if test="pd.lastStart !=null and pd.lastStart !=''">
+		   and
+		   CREATOR_TIME &gt; #{pd.lastStart}
+		</if>
+		<if test="pd.lastEnd !=null and pd.lastEnd !=''">
+		   and
+		   CREATOR_TIME &lt; #{pd.lastEnd}
+		</if>
+		<if test="pd.today !=null and pd.today !=''">
+			and 
+			CREATOR_TIME LIKE CONCAT( #{pd.today},'%') 
+		</if>
+	  GROUP BY CREATOR_TIME1 order by CREATOR_TIME DESC
+	    
+	</select>
+	   
+	
+</mapper>

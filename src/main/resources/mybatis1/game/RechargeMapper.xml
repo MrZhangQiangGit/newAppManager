@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="RechargeMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		m_play_recharge
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		USER_ID,	
+		NICK_NAME,	
+		CHARGE_NUM,	
+		CHARGE_TYPE,
+		MONEY,
+		REMARK,
+		CREATOR,
+		CHARGE_NAME,
+		CREATOR_TIME,	
+		RECHARGE_ID
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{USER_ID},	
+		#{NICK_NAME},	
+		#{CHARGE_NUM},
+		#{CHARGE_TYPE},
+		#{MONEY},
+		#{REMARK},
+		#{CREATOR},	
+		#{CHARGE_NAME},
+		#{CREATOR_TIME},	
+		#{RECHARGE_ID}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			RECHARGE_ID = #{RECHARGE_ID}
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			USER_ID = #{USER_ID},
+			NICK_NAME = #{NICK_NAME},
+			CHARGE_NUM = #{CHARGE_NUM},
+			CREATOR = #{CREATOR},
+			CREATOR_TIME = #{CREATOR_TIME},
+		RECHARGE_ID = RECHARGE_ID
+		where 
+		RECHARGE_ID = #{RECHARGE_ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			RECHARGE_ID = #{RECHARGE_ID}
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 1=1
+		<if test="pd.CREATOR!=null and pd.CREATOR !='admin'">
+			and CREATOR = #{pd.CREATOR}
+		</if>
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					USER_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					NICK_NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+					or 
+					CREATOR LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+				)
+		</if>
+		<if test="pd.lastStart!=null and pd.lastStart !=''">
+			and CREATOR_TIME &gt;= #{pd.lastStart}
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd !=''">
+			and CREATOR_TIME &lt;= #{pd.lastEnd}
+		</if>
+		<if test="pd.today !=null and pd.today !=''">
+			and 
+			CREATOR_TIME LIKE CONCAT( #{pd.today},'%') 
+		</if>
+		order by CREATOR_TIME desc
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			RECHARGE_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+	<!-- 列表(用户名，) -->
+	<select id="listAlluser" parameterType="pd" resultType="pd">
+		select NICK_NAME,USER_ID,ROOM_CARD from m_app_user
+	</select>
+	
+	<!-- 查询number -->
+	<select id="findByname" parameterType="pd" resultType="pd">
+		select NUMBER from sys_user where USERNAME = #{USERNAME}
+	</select>
+	
+	<!-- 修改 -->
+	<update id="editAgent" parameterType="pd">
+		update m_agent set 
+			CARD_NUM = #{CARD_NUM}
+		where 
+		AGENT_CODE = #{AGENT_CODE}
+	</update>
+	
+	<!-- 修改 -->
+	<update id="editAgent2" parameterType="pd">
+		update m_agent set 
+			CARD_NUM = #{card_num},
+			SALE_TOTAL = #{sale_total}
+		where 
+		AGENT_CODE = #{agent_code}
+	</update>
+	
+	<!-- 修改 -->
+	<update id="editAgent3" parameterType="pd">
+		update m_agent set 
+			SALE_TOTAL = #{sale_total}
+		where 
+		AGENT_CODE = #{agent_code}
+	</update>
+	
+	<!-- 修改 -->
+	<update id="editAppUser" parameterType="pd">
+		update m_app_user set 
+			ROOM_CARD = #{ROOM_CARD}
+		where 
+		USER_ID = #{USER_ID}
+	</update>
+	
+	<!-- 修改 -->
+	<update id="editAppUser2" parameterType="pd">
+		update m_app_user set 
+			ROOM_CARD = #{room_code}
+		where 
+		USER_ID = #{user_id}
+	</update>
+	
+	<!-- 查询Agent房卡和销售总数根据ID -->
+	<select id="findMunById" parameterType="pd" resultType="pd">
+		select CARD_NUM,SALE_TOTAL from m_agent where AGENT_CODE = #{AGENT_CODE}
+	</select>
+	
+	<!-- 查询AppUser房卡根据ID -->
+	<select id="findCardById" parameterType="pd" resultType="pd">
+		select ROOM_CARD from m_app_user where USER_ID = #{USER_ID}
+	</select>
+	
+	<!-- 查询Agent房卡和销售总数根据ID -->
+	<select id="findMunById2" parameterType="pd" resultType="pd">
+		select CARD_NUM,SALE_TOTAL from m_agent where AGENT_CODE = #{agent_code}
+	</select>
+	
+	<!-- 查询Agent房卡根据ID -->
+	<select id="findMun" parameterType="string" resultType="pd">
+		select CARD_NUM from m_agent where AGENT_CODE = #{id}
+	</select>
+	
+	<!-- 查询玩家充值记录(新列表)  -->
+	<select id="findUserRechargeList" parameterType="pd" resultType="pd">
+		SELECT * FROM m_play_recharge WHERE 1=1 
+		<if test="number !=null and number != 888888">
+			and
+			USER_ID in
+			(SELECT USER_ID FROM m_app_user WHERE YQ_CODE=#{number}) 
+		</if>
+		<!-- 模糊查询 -->
+		<if test="keywords !=null and keywords!=''">
+			and
+				(
+					<!-- 模糊查询1 -->
+					LOCATE(#{keywords},USER_ID)
+					or
+					<!-- 模糊查询2 -->
+					POSITION(#{keywords} in NICK_NAME)
+					or
+					<!-- 模糊查询3 -->
+					instr(CREATOR,#{keywords})
+				)
+		</if>
+		<if test="lastStart!=null and lastStart !=''">
+			and CREATOR_TIME &gt;= #{lastStart}
+		</if>
+		<if test="lastEnd!=null and lastEnd !=''">
+			and CREATOR_TIME &lt;= #{lastEnd}
+		</if>
+		order by CREATOR_TIME desc,CHARGE_TYPE
+		limit #{start},#{sum}
+	</select>
+	
+	<!-- 查询玩家充值总记录数 -->
+	<select id="findUserRechargeTotal" parameterType="pd" resultType="pd">
+		SELECT count(*) total from m_play_recharge WHERE 1=1 
+		<if test="number !=null and number != 888888">
+			and
+			 USER_ID in
+			(SELECT USER_ID FROM m_app_user WHERE YQ_CODE=#{number})
+		</if>
+		<!-- 模糊查询 -->
+		<if test="keywords !=null and keywords!=''">
+			and
+				(
+					<!-- 模糊查询1 -->
+					LOCATE(#{keywords},USER_ID)
+					or
+					<!-- 模糊查询2 -->
+					POSITION(#{keywords} in NICK_NAME)
+					or
+					<!-- 模糊查询3 -->
+					instr(CREATOR,#{keywords})
+				)
+		</if>
+		<if test="lastStart!=null and lastStart !=''">
+			and CREATOR_TIME &gt;= #{lastStart}
+		</if>
+		<if test="lastEnd!=null and lastEnd !=''">
+			and CREATOR_TIME &lt;= #{lastEnd}
+		</if>
+	</select>
+	
+	
+	
+</mapper>

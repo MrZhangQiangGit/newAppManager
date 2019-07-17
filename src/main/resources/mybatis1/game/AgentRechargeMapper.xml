@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="AgentRechargeMapper">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		m_agent_recharge
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		USER_ID,	
+		NICK_NAME,
+		CHARGE_TYPE,
+		REMARK,	
+		CHARGE_NUM,	
+		CREATOR,
+		CHARGE_NAME,	
+		CREATOR_TIME,	
+		MONEY,	
+		AGENTRECHARGE_ID
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{USER_ID},	
+		#{NICK_NAME},
+		#{CHARGE_TYPE},
+		#{REMARK},	
+		#{CHARGE_NUM},	
+		#{CREATOR},
+		#{CHARGE_NAME},	
+		#{CREATOR_TIME},	
+		#{MONEY},	
+		#{AGENTRECHARGE_ID}
+	</sql>
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+	<include refid="Field"></include>
+		) values (
+	<include refid="FieldValue"></include>
+		)
+	</insert>
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			AGENTRECHARGE_ID = #{AGENTRECHARGE_ID}
+	</delete>
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set 
+			USER_ID = #{USER_ID},
+			NICK_NAME = #{NICK_NAME},
+			CHARGE_NUM = #{CHARGE_NUM},
+			CREATOR = #{CREATOR},
+			CREATOR_TIME = #{CREATOR_TIME},
+			MONEY = #{MONEY},
+		where 
+		AGENTRECHARGE_ID = #{AGENTRECHARGE_ID}
+	</update>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 
+			AGENTRECHARGE_ID = #{AGENTRECHARGE_ID}
+	</select>
+	
+	<!-- 通过用户名获取所有代理商 -->
+	<select id="findAgentByUser" parameterType="pd" resultType="pd">
+		select AGENT_CODE,AGENT_NAME from m_agent where 1=1
+		<if test="CREATOR!=null and CREATOR !='admin'">
+			and CREATOR = #{CREATOR}
+		</if>
+	</select>
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where 1=1
+		<if test="pd.CREATOR!=null and pd.CREATOR !='admin'">
+			and CREATOR = #{pd.CREATOR}
+		</if>
+		<if test="pd.keywords!= null and pd.keywords != ''"><!-- 关键词检索 -->
+			and
+				(
+					USER_ID LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+					 or 
+					NICK_NAME LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%') 
+					or 
+					CREATOR LIKE CONCAT(CONCAT('%', #{pd.keywords}),'%')
+				)
+		</if>
+		<if test="pd.lastStart!=null and pd.lastStart !=''">
+			and CREATOR_TIME &gt;= #{pd.lastStart}
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd !=''">
+			and CREATOR_TIME &lt;= #{pd.lastEnd}
+		</if>
+		<if test="pd.today !=null and pd.today !=''">
+			and 
+			CREATOR_TIME LIKE CONCAT( #{pd.today},'%') 
+		</if>
+		order by CREATOR_TIME desc
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where 
+			AGENTRECHARGE_ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	
+	
+	<!-- 保存 -->
+	
+	<!-- 查询agent房卡根据ID -->
+	<select id="findCardById" parameterType="pd" resultType="pd">
+		select CARD_NUM from m_agent where AGENT_CODE = #{agent_code1}
+	</select>
+	
+	<!-- 查询Agent房卡和销售总数根据ID -->
+	<select id="findCardById2" parameterType="pd" resultType="pd">
+		select CARD_NUM,SALE_TOTAL from m_agent where AGENT_CODE = #{agent_code2}
+	</select>
+	
+	<!-- 修改被充值代理商的房卡 -->
+	<update id="edit1" parameterType="pd">
+		update m_agent set CARD_NUM = #{card_num1} where AGENT_CODE = #{agent_code1}
+	</update>
+	
+	<!-- 修改登陆人的房卡 -->
+	<update id="edit2" parameterType="pd">
+		update m_agent set CARD_NUM = #{card_num2} where AGENT_CODE = #{agent_code2}
+	</update>
+	
+	<!-- 修改登陆人的售卡 -->
+	<update id="edit3" parameterType="pd">
+		update m_agent set SALE_TOTAL = #{total} where AGENT_CODE = #{agent_code2}
+	</update>
+	
+	<!-- 查询Agent房卡根据ID -->
+	<select id="findMun" parameterType="string" resultType="pd">
+		select CARD_NUM from m_agent where AGENT_CODE = #{id}
+	</select>
+	
+	<!-- 补卡 -->
+	<update id="edit4" parameterType="pd">
+		update m_agent_recharge set CHARGE_NUM = #{NUMS} where AGENTRECHARGE_ID = #{AGENTRECHARGE_ID}
+	</update>
+	
+	<!--查询充卡数根据充卡记录id-->
+	<select id="findchargeMun" parameterType="string" resultType="pd">
+		select CHARGE_NUM from m_agent_recharge where AGENTRECHARGE_ID = #{aid}
+	</select>
+	<!-- 查询购卡记录 -->
+	<select id="findbuycardlistPage" parameterType="page" resultType="pd">
+	    select * from m_agent_recharge where USER_ID=#{pd.USER_ID} 
+	    <if test="pd.lastStart!=null and pd.lastStart !=''">
+			and CREATOR_TIME &gt;= #{pd.lastStart}
+		</if>
+		<if test="pd.lastEnd!=null and pd.lastEnd !=''">
+			and CREATOR_TIME &lt;= #{pd.lastEnd}
+		</if>
+		<if test="pd.today !=null and pd.today !=''">
+			and 
+			CREATOR_TIME LIKE CONCAT( #{pd.today},'%') 
+		</if>
+	    order by CREATOR_TIME
+	</select>
+	<!-- 查询代理充值记录(新列表)  -->
+	<select id="findAgentRechargeList" parameterType="pd" resultType="pd">
+		SELECT * from m_agent_recharge WHERE 1=1 
+		<if test="number !=null and number != 888888">
+			and
+			 USER_ID in
+			(SELECT AGENT_CODE FROM m_agent WHERE P_ID = #{number})
+		</if>
+		<!-- 模糊查询 -->
+		<if test="keywords !=null and keywords!=''">
+			and
+				(
+					<!-- 模糊查询1 -->
+					LOCATE(#{keywords},USER_ID)
+					or
+					<!-- 模糊查询2 -->
+					POSITION(#{keywords} in NICK_NAME)
+					or
+					<!-- 模糊查询3 -->
+					instr(CREATOR,#{keywords})
+				)
+		</if>
+		<if test="lastStart!=null and lastStart !=''">
+			and CREATOR_TIME &gt;= #{lastStart}
+		</if>
+		<if test="lastEnd!=null and lastEnd !=''">
+			and CREATOR_TIME &lt;= #{lastEnd}
+		</if>
+		order by CREATOR_TIME desc,CHARGE_TYPE
+		limit #{start},#{sum}
+	</select>
+	
+	<!-- 查询代理充值总记录数 -->
+	<select id="findAgentRechargeTotal" parameterType="pd" resultType="pd">
+		SELECT count(*) total from m_agent_recharge WHERE 1=1 
+		<if test="number !=null and number != 888888">
+			and
+			 USER_ID in
+			(SELECT AGENT_CODE FROM m_agent WHERE P_ID = #{number})
+		</if>
+		<!-- 模糊查询 -->
+		<if test="keywords !=null and keywords!=''">
+			and
+				(
+					<!-- 模糊查询1 -->
+					LOCATE(#{keywords},USER_ID)
+					or
+					<!-- 模糊查询2 -->
+					POSITION(#{keywords} in NICK_NAME)
+					or
+					<!-- 模糊查询3 -->
+					instr(CREATOR,#{keywords})
+				)
+		</if>
+		<if test="lastStart!=null and lastStart !=''">
+			and CREATOR_TIME &gt;= #{lastStart}
+		</if>
+		<if test="lastEnd!=null and lastEnd !=''">
+			and CREATOR_TIME &lt;= #{lastEnd}
+		</if>
+	</select>
+	
+	
+	
+</mapper>

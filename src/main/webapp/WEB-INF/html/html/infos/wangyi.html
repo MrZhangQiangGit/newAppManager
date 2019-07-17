@@ -1,0 +1,407 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="copyright" content="www.apicloud.com" />
+<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+<title>列表</title>
+<link rel="stylesheet" href="../static/login/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css" href="../htmlResources/css/api.css" />
+<link rel="stylesheet" type="text/css" href="../htmlResources/css/top.css" />
+<!-- <link rel="stylesheet" href="../static/ace/css/font-awesome.css" /> -->
+<style>
+	html,body {min-height: 100%;background-color: #f9f9f9;padding: 25px 0 27px 0;}
+	.pl10 {padding-left: 10px;}
+	
+	/* 用flex重写框架 */
+	.egret-flex-item {display: -webkit-box;-webkit-box-align:center;height: 3em;/*background-color: #fff;*/}
+	/* 左部logo */
+	.egret-flex-item-logo {/* max-width: 50px; */ min-width: 90px; margin-left: 0.5em; margin-right: 0.2em;-webkit-box-flex: 1; -webkit-box-align: center;text-align: center;}
+	.egret-flex-item-logo img {height: 2em; width: 2em; -webkit-box-align: center;vertical-align: top;/*否则图片不会居中，底部仍然是会有空白*/}
+	/* 中间文本信息 */
+	.egret-flex-item-shelf {overflow: hidden; -webkit-box-flex:2; -webkit-box-align: center;}
+	.egret-flex-item-shelf div {text-overflow: ellipsis; white-space: nowrap; overflow: hidden;}
+	.egret-flex-item-shelf .egret-flex-item-shelf01 {font-size: 1.1em;}
+	.egret-flex-item-shelf .egret-flex-item-shelf02 {font-size: 0.6em; color: #666; margin-top: 0.6em;}
+	.egret-flex-item-shelf .egret-flex-item-redclassify {color: #E03F40; border: 1px solid #E03F40; font-size: inherit; padding: 0.1em; border-radius: 1px; margin-right: 5px;}
+	
+	/* 右部箭头 */
+	.egret-flex-item-arrow {-webkit-box-flex: 1;max-width: 10px; min-width: 10px; margin-right: 15px;}
+	.egret-flex-item-arrow img {width: 100%; max-width: 10px;}
+	
+	/* 独立条目 */
+	.isolateitem-bottom {border-bottom: 1px solid #e0e0e0; }
+	
+	/* 个人用户标题 */
+	.musiclistprofile {height: 7em; background-color: #FFFFE0; }
+	.musiclistprofile .egret-flex-item-logo img {height: 6em; width: 6em; }
+	.musiclistprofile .egret-flex-item-logo {max-width: 6em; min-width: 6em; margin-left: 0.5em; margin-right: 0.2em; -webkit-box-flex: 1; -webkit-box-align: center; }
+	.musiclistprofile .egret-flex-item-shelf  {margin-left: 0.5em;}
+	.musiclistprofile .egret-flex-item-shelf .egret-flex-item-shelf01 {font-size: 1.5em; }
+	.musiclistprofile .egret-flex-item-shelf .egret-flex-item-shelf02 {margin-top: 1.6em;-webkit-box-align: center;display: -webkit-box;}
+	.musiclistprofile .egret-flex-item-shelf .egret-flex-item-shelf02 .createrlogo {width: 2em;}
+	.musiclistprofile .egret-flex-item-shelf .egret-flex-item-shelf02 .creatername {margin: 0 1em;}
+	
+	/* 播放全部*/
+	.playall {background-color: #f9f9f9;}
+	.playall .egret-flex-item-arrow {-webkit-box-flex: 1; max-width: 2.0em; min-width: 2.0em; margin-right: 15px;}
+	.playall .egret-flex-item-arrow img {max-width: none;}
+	.playall .egret-flex-item-logo img {width: 1.5em;height: 1.5em;}
+	
+	/* egret item 抽象右部 */
+	.egret-flex-item-abright {display: -webkit-box; -webkit-box-flex: 1; border-bottom: 1px solid #e0e0e0; -webkit-box-align: center;height: 4em;}
+	
+	/* musiclist 特殊样式 */
+	.musiclist-item {height: 4em;}
+	.musiclist-item .egret-flex-item-logo {text-align: center;font-size: 1.2em;color: #999999;}
+	.musiclist-item .egret-flex-item-shelf .egret-flex-item-shelf01 {font-size: 1em;}
+	.musiclist-item .egret-flex-item-arrow {max-width: 24px; min-width: 24px;}
+	.musiclist-item .egret-flex-item-arrow img {max-width: none;}
+	
+	/* 弹出工具条 */
+	.musiclist-item-tool {background-color: #303030;color: #fff;display: -webkit-box;padding: 0 10px;display: none;}
+	.musiclist-item-tool .userinfocol {-webkit-box-flex:1;text-align: center;padding: 5px 0;}
+	.musiclist-item-tool .userinfocol .info img {width: 50%;}
+	.musiclist-item-tool .userinfocol .num {color: #A8A8A8;font-size: 0.8em;}
+	
+	/* 悬浮 */
+	.musiclist-item-tool .toolhover {background-color: #1d1d1d;}
+	.allplayhover {background-color: #e2e2e2;}
+	
+	/* 头部背景 */
+	.musiclistprofile {height: 9em;}
+	.egret-flex-item .topheaderbg {width: 100%; height: 100%; vertical-align: top;}
+	.egret-flex-item .topheaderlogo {position: absolute;width: 50px;height: 50px;top: 30px;left: 20px;}
+	.egret-flex-item .topheadercollect {position: absolute; width: 50px; height: 50px; top: 70px; right: 20px; background-color: #76110B; border-radius: 25px;}
+	.egret-flex-item .topheadercollect .border {width: 100%;}
+	.egret-flex-item .topheadercollect .inside {position: absolute;width: 100%;bottom: 0;}
+	.egret-flex-item .info {position: absolute; left: 20px; top: 110px; font-size: 0.6em; color: #fff;}
+	
+	/*搜索框*/
+	#keywords{
+		background-color: white;
+		height: 30px;
+		width:100%;
+		font-size: 24px;
+		margin: 0;
+	}
+	#keywords::-webkit-input-placeholder{
+		 /* placeholder颜色  */
+         color: #aab2bd;
+         /* placeholder字体大小  */
+         font-size: 22px;
+         /* placeholder位置  */
+         text-align: right;
+         padding-right: 10px;
+         line-height: 30px;
+	}
+	/* 搜索框比例 */
+	.ssk{
+		width: 60%;
+		-webkit-flex:2;
+		flex:2;
+	}
+	/*搜索按钮比例*/
+	.ssbut{
+		width: 24%;
+	}
+	#ssbut{
+		width: 100%;
+	}
+	/*个人信息样式*/
+	#geren{
+		display: flex;
+		display: -webkit-flex;
+		align-items:center;
+		justify-content:center;
+	}
+	
+	.musiclistprofile #user_data{
+		display: flex;
+		display: -webkit-flex;
+		flex-flow:column wrap;
+		justify-content:space-around;
+		align-content:stretch;
+		width: 95%;
+		height: 95%;
+	}
+	.musiclistprofile #user_data .tr{
+		display: flex;
+		display: -webkit-flex;
+		justify-content:space-around;
+	}
+	.musiclistprofile #user_data .tr .td{
+		display: flex;
+		display: -webkit-flex;
+		flex:1 1 auto;
+	}
+	#fy{
+		display:flex;
+		display:-webkit-flex;
+		justify-content:center;
+		align-items:center;
+		margin-top: 10px;
+	}
+	#fy button{
+		margin: 0 1px 0 1px;
+	}
+	#page{
+		width: 50px;
+		margin: 0;
+		text-align: center;
+	}
+	#ts{
+		margin: 0 auto;
+		text-align: center;
+	}
+</style>
+</head>
+<body ng-app="mainApp" ng-controller="mainController">
+	<div id="header" class="navbar navbar-default navbar-fixed-top">
+         <div id="out" onclick="logout()">
+         		<!-- <a class="back-icon" tapmode="" ></a> -->
+         		<!-- <img style="width: 30px;height: 30px;" alt="" src="../htmlResources/images/JinCheng_image/arr-l.png">|退出登录 -->
+         		<img style="width: 30px;height: 30px;" alt="" src="../htmlResources/images/WangYi_image/cm2_icn_back.png">
+         </div>
+         <!-- <h1>{{setName}}</h1> -->
+         <span>代理管理</span>
+         <div class="light-blue">
+			<a data-toggle="dropdown"  class="dropdown-toggle" href="#" onclick="display();">
+				<img style="width: 34px;height: 34px;" class="nav-user-photo" src="../static/ace/avatars/avatar5.png" alt="Jason's Photo" />
+				<!-- <span class="user-info" id="user_info"></span> -->
+				 <i class="ace-icon fa fa-caret-down"></i>
+			</a>
+			<ul class="user-menu dropdown-menu pull-right" id="user-menu">
+				<li>
+					<a onclick="editUserH();" style="cursor:pointer;"><i class="ace-icon fa fa-cog"></i>修改资料</a><!-- editUserH()在 WebRoot\static\js\myjs\head.js中 -->
+				</li>
+				<li id="systemset">
+					<a onclick="editSys();" style="cursor:pointer;"><i class="ace-icon fa fa-user"></i>系统设置</a><!-- editSys()在 WebRoot\static\js\myjs\head.js中 -->
+				</li>
+				<li class="divider"></li>
+				<li>
+					<a href="../logoutApp"><i class="ace-icon fa fa-power-off"></i>退出登录</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+<!-- 登录代理信息-->
+<div id="geren" class="egret-flex-item musiclistprofile">
+	<!-- <img src="../htmlResources/images/WangYi_image/frame0101cover/cm2_pro_banner_bg1.jpg" alt="" class="topheaderbg">
+	<img src="../htmlResources/images/WangYi_image/frame0101cover/frame0101cover06.jpg" alt="" class="topheaderlogo">
+	<div class="topheadercollect">
+		<img src="../htmlResources/images/WangYi_image/frame0101cover/cm2_pro_head_140.png" alt="" class="border">
+		<img src="../htmlResources/images/WangYi_image/frame0101cover/cm2_mv_btn_fav.png" alt="" class="inside">
+	</div>
+	<div class="info">根据你的音乐口味生成，每天6:00更新</div> -->
+	<div id="user_data">
+		<div class="tr">
+			<div class="td">ID:{{agt.AGENT_CODE}}</div>
+			<div class="td">昵称:{{agt.AGENT_NAME}}</div>
+		</div>
+		<div class="tr">
+			<div class="td">邀请码:{{agt.YQ_CODE}}</div>
+			<div class="td">等级:{{agt.LEVEL}}</div>
+		</div>
+		<div class="tr">
+			<div class="td">剩余房卡:{{agt.CARD_NUM}}</div>
+			<div class="td">售卡:{{agt.SALE_TOTAL}}</div>
+		</div>
+	</div>
+</div>
+<!-- 关键字 搜索 -->
+<div class="egret-flex-item isolateitem-bottom playall" tapmode="allplayhover">
+	<div class="egret-flex-item-shelf ssk">
+		<div class="egret-flex-item-shelf01"> 
+			<input type="text" id="keywords" name="keywords" ng-model="keywords" value="" placeholder="关键字搜索"/>
+		</div>
+	</div>
+	<div class="egret-flex-item-logo ssbut">
+		<button id="ssbut" class="btn btn-success" ng-click="search();"  >
+		<sapn>搜索</sapn>
+		<img src="../htmlResources/images/WangYi_image/header_search.png" alt="" class="">
+		</button>
+	</div>
+</div>
+<!-- 3代理列表  -->
+<div ng-repeat="ag in agent">
+	<div class="egret-flex-item musiclist-item" >
+		<div class="egret-flex-item-abright">
+			<div class="egret-flex-item-shelf pl10">
+				<div class="egret-flex-item-shelf01">
+					{{ag.AGENT_NAME}}
+				</div>
+				<div class="egret-flex-item-shelf02">
+					<span>ID:</span>{{ag.AGENT_CODE}} 
+					<span>邀请码:</span>{{ag.YQ_CODE}} 
+					<span>剩余房卡:</span>{{ag.CARD_NUM}} 
+					<span>售卡:</span>{{ag.SALE_TOTAL}}
+				</div>
+			</div>
+			<div class="egret-flex-item-arrow">
+				<img src="../htmlResources/images/WangYi_image/musiclist/musiclistmore.png" alt="" class="toobarimg" ng-click="expandlist($index, this)">
+			</div>
+		</div>
+	</div>
+	<div class="musiclist-item-tool" data-click='0' >
+		<div class="userinfocol" tapmode="toolhover" ng-click="">
+			<div class="info"><img src="../htmlResources/images/WangYi_image/musiclist/musiclisttool01.png" alt=""></div>
+			<div class="num">修改</div>
+		</div>
+		<div class="userinfocol" tapmode="toolhover" ng-click="recharge(ag.AGENT_CODE);">
+			<div class="info"><img src="../htmlResources/images/WangYi_image/musiclist/musiclisttool02.png" alt=""></div>
+			<div class="num">冲卡</div>
+		</div>
+		<div class="userinfocol" tapmode="toolhover" ng-click="">
+			<div class="info"><img src="../htmlResources/images/WangYi_image/musiclist/musiclisttool03.png" alt=""></div>
+			<div class="num">删除</div>
+		</div>
+		<div class="userinfocol" tapmode="toolhover" ng-click="">
+			<div class="info"><img src="../htmlResources/images/WangYi_image/musiclist/musiclisttool04.png" alt=""></div>
+			<div class="num">详情</div>
+		</div>
+		<div class="userinfocol" tapmode="toolhover" ng-click="">
+			<div class="info"><img src="../htmlResources/images/WangYi_image/musiclist/musiclisttool05.png" alt=""></div>
+			<div class="num">玩家</div>
+		</div>
+	</div>
+</div>
+<div class="navbar navbar-default navbar-fixed-bottom" style="background-color: #C5C1AA;" >
+<div id="fy">
+	<button class="btn btn-info" ng-click="flip(0);" >上一页</button>
+	<input id="page" type="number" value=""ng-model="page"/>
+	<button class="btn btn-info" ng-click="flip(1);" >下一页</button>
+	<button class="btn btn-info" ng-click="flip(2);" >跳转</button>
+</div>
+<div id="ts">
+	<span>共{{total}}条,{{totalPage}}页</span>
+</div>
+</div>
+</body>
+<script src="../static/js/jquery-1.7.2.js"></script>
+<script src="../static/ace/js/bootstrap.js"></script>
+<script src="../static/login/js/bootstrap.min.js"></script>
+<!-- <script src="http://cdn.static.runoob.com/libs/angular.js/1.4.6/angular.min.js"></script> -->
+<script src="../htmlResources/js/angular.min.js"></script>
+<script type="text/javascript" src="../htmlResources/script/top.js"></script>
+<script type="text/javascript">
+	var app = angular.module('mainApp',[]);
+	app.controller('mainController',function($scope,$http){
+		
+		$scope.agent = null;
+		$scope.page = null;
+		
+		var url= "../agentApp/getAgentList.do";//访问地址
+		//相当于ajax交互,获取列表资料
+		$http.post(url).success(function(data){
+			var list = data[0].agentList;
+			//console.log(list);
+			/* for(var i=0;i<list.length;i++){
+				console.log("lll:"+list[i].AGENT_CODE);
+			} */
+			$scope.agent = data[0].agentList;
+			$scope.page = data[0].page;
+			$scope.agt = data[0].agent;
+			$scope.totalPage = data[0].totalPage;
+			$scope.total = data[0].total;
+		});
+		//搜索方法
+		$scope.search = function(){
+			var value = $("#keywords").val();
+			console.log("搜索值:"+value);
+			var searchUrl = "getAgentList.do?keywords="+value;
+			$http.post(searchUrl).success(function(data){
+				$scope.agent = data[0].agentList;//代理列表
+				$scope.page = data[0].page;//页数
+				$scope.agt = data[0].agent;//代理信息
+				$scope.keywords = data[0].keywords;//搜索框里的值
+				$scope.totalPage = data[0].totalPage;
+				$scope.total = data[0].total;
+			});
+		};
+		//翻页0:上一页,1:下一页,2跳转
+		$scope.flip = function(status){
+			var keywords = $("#keywords").val();
+			var page = parseInt($("#page").val());
+			if(status==0){
+				page = page-1;
+			}else if(status==1){
+				page = page+1;
+			}
+			console.log("翻页到:"+page);
+			var flipUrl = "getAgentList.do?keywords="+keywords+"&page="+page;
+			$http.post(flipUrl).success(function(data){
+				$scope.agent = data[0].agentList;//代理列表
+				$scope.page = data[0].page;//页数
+				$scope.agt = data[0].agent;//代理信息
+				$scope.searchVale = data[0].keywords;//搜索框里的值
+				$scope.totalPage = data[0].totalPage;
+				$scope.total = data[0].total;
+			});
+		}
+		//冲卡
+		$scope.recharge = function(id){
+			console.log("点击的ID:"+id);
+			var rechargeUrl = ""+id;
+		}
+		/*点击展开按钮*/
+		$scope.expandlist = function(index, clickitem){
+			console.log("序号:"+index);
+			var toolbarlist = document.getElementsByClassName('musiclist-item-tool');
+			var toolbarimg = document.getElementsByClassName('toobarimg');
+			var clicktoolitem = toolbarlist[index];
+			var click = clicktoolitem.getAttribute("data-click");
+			// 复原其他tool，一次只打开一个tool
+			for (var i = 0; i < toolbarlist.length; i++) {
+				toolbarlist[i].setAttribute("data-click", 0);
+				toolbarlist[i].style.display = 'none';
+				toolbarimg[i].src = "../htmlResources/images/WangYi_image/musiclist/musiclistmore.png";
+			}
+			if (click == 0) {
+				// 点开
+				clicktoolitem.setAttribute("data-click", 1);
+				clickitem.src = "../htmlResources/images/WangYi_image/musiclist/musiclistmore_prs.png";
+				clicktoolitem.style.display = '-webkit-box';
+			}else {
+				// 关闭
+				clicktoolitem.setAttribute("data-click", 0);
+				clickitem.src = "../htmlResources/images/WangYi_image/musiclist/musiclistmore.png";
+				clicktoolitem.style.display = 'none';
+			}
+		}
+	});
+	
+	
+	
+	
+	//加载列表
+	$(function(){
+		
+	});
+	//打开和关闭下拉菜单
+	function expandlist (index, clickitem) {
+		console.log("序号:"+index);
+		var toolbarlist = document.getElementsByClassName('musiclist-item-tool');
+		var toolbarimg = document.getElementsByClassName('toobarimg');
+		var clicktoolitem = toolbarlist[index];
+		var click = clicktoolitem.getAttribute("data-click");
+		// 复原其他tool，一次只打开一个tool
+		for (var i = 0; i < toolbarlist.length; i++) {
+			toolbarlist[i].setAttribute("data-click", 0);
+			toolbarlist[i].style.display = 'none';
+			toolbarimg[i].src = "../htmlResources/images/WangYi_image/musiclist/musiclistmore.png";
+		}
+		if (click == 0) {
+			// 点开
+			clicktoolitem.setAttribute("data-click", 1);
+			clickitem.src = "../htmlResources/images/WangYi_image/musiclist/musiclistmore_prs.png";
+			clicktoolitem.style.display = '-webkit-box';
+		}else {
+			// 关闭
+			clicktoolitem.setAttribute("data-click", 0);
+			clickitem.src = "../htmlResources/images/WangYi_image/musiclist/musiclistmore.png";
+			clicktoolitem.style.display = 'none';
+		}
+	}
+</script>
+</html>
